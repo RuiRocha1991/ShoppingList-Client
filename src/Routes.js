@@ -6,7 +6,9 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 
 import {
   Maintenance as MaintenanceView,
-  NotFound as NotFoundView
+  NotFound as NotFoundView,
+  SignIn as SignInView,
+  Tests as TestsView
 } from './views';
 
 const Routes = () => {
@@ -15,13 +17,25 @@ const Routes = () => {
       <Redirect
         exact
         from="/"
-        to="/maintenance"
+        to="/sign-in"
       />
       <RouteWithLayout
         component={MaintenanceView}
         exact
         layout={MinimalLayout}
         path="/maintenance"
+      />
+      <RouteWithLayout
+          component={SignInView}
+          exact
+          layout={MinimalLayout}
+          path="/sign-in"
+      />
+      <RouteWithLayout
+          component={TestsView}
+          exact
+          layout={MinimalLayout}
+          path="/tests"
       />
       <RouteWithLayout
         component={NotFoundView}
