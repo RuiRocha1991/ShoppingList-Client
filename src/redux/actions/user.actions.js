@@ -12,7 +12,6 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 //#region AuthActions
 export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
-  console.log(response);
   const user = response.profileObj;
   dispatch(fetchSignInStart());
   await delay(5000).then(() => {
