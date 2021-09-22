@@ -20,4 +20,9 @@ export const showErrorMessage = (data) => ({
 
 export const closeErrorMessage = () => ({
   type: UI_CLOSE_ERROR,
-})
+});
+
+export const prepareCatch = (err) => (dispatch) => {
+  dispatch(showErrorMessage({message: err.message}));
+  console.error(err);
+};

@@ -1,5 +1,5 @@
 import {
-  USER_LOGIN, USER_LOGIN_SUCCESS
+  USER_LOGIN_SUCCESS, USER_LOGOUT_SUCCESS
 } from '../../Constants';
 
 const initialState = {
@@ -18,6 +18,16 @@ export default (state = initialState, action) => {
         ...state,
         ...action.payload,
         isAuthenticated: true
+      }
+    case USER_LOGOUT_SUCCESS:
+      return {
+        ...state,
+        id: '',
+        googleId: '',
+        name: '',
+        email: '',
+        isAuthenticated: false,
+        image: '',
       }
     default:
       return state

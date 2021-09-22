@@ -6,6 +6,6 @@ export const UI_CLOSE_ERROR = 'UI_CLOSE_ERROR';
 //#endregion
 
 //#region USER CONSTANTS
-export const USER_LOGIN = 'USER_LOGIN';
 export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS';
+export const USER_LOGOUT_SUCCESS = 'USER_LOGOUT_SUCCESS';
 //#endregion

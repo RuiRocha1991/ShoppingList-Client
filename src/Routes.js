@@ -8,7 +8,8 @@ import {
   Maintenance as MaintenanceView,
   NotFound as NotFoundView,
   SignIn as SignInView,
-  Tests as TestsView
+  Tests as TestsView,
+  SignOut as SignOutView
 } from './views';
 
 const Routes = () => {
@@ -39,6 +40,13 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/dashboard"
+      />
+      <RouteWithLayout
+          isProtected={true}
+          component={SignOutView}
+          exact
+          layout={MinimalLayout}
+          path="/sign-out"
       />
       <RouteWithLayout
           component={NotFoundView}

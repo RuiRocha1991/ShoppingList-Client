@@ -4,10 +4,6 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
-import {
-  googleAuthSignInFailure,
-  googleAuthSignInSuccess
-} from "../../../../../../redux/actions/user.actions";
 import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({

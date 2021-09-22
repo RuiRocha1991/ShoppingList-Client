@@ -1,15 +1,12 @@
 import { push } from 'react-router-redux';
 import {
-  USER_LOGIN, USER_LOGIN_SUCCESS
+  USER_LOGIN_SUCCESS, USER_LOGOUT_SUCCESS
 } from '../../Constants';
 import {
   fetchSignInStart,
-  fetchSignInStop, showErrorMessage
+  fetchSignInStop, prepareCatch
 } from './ui.actions';
 import axios from "axios";
-
-
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
 //#region AuthActions
 export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
@@ -29,8 +26,7 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
       dispatch(push('/dashboard'));
     }
   }).catch(err => {
-    dispatch(showErrorMessage({message: err.message}));
-    console.error(err);
+    dispatch(prepareCatch(err));
   });
 }
 
@@ -42,12 +38,10 @@ const signInSuccess = (data) => ({
 export const googleAuthSignInFailure = (response) => {
   console.log(response);
 }
-/*
 export const signOut = () => (dispatch) => {
-  dispatch(fetchSignOut());
   axios({
     method: 'GET',
-    url: 'http://localhost:3001/auth/logout',
+    url: `${process.env.REACT_APP_SERVER_URL}/auth/logout`,
     withCredentials: true
   }).then(response => {
     if (response.status === 200) {
@@ -55,8 +49,12 @@ export const signOut = () => (dispatch) => {
       dispatch(push('/sign-in'))
     }
   }).catch(err => {
-    console.error(err);
+    dispatch(prepareCatch(err));
   })
-};*/
+};
+
+export const signOutSuccess = () => (dispatch) => {
+  dispatch({type: USER_LOGOUT_SUCCESS});
+};
 
 //#endregion
