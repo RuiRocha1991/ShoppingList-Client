@@ -8,7 +8,8 @@ import {
   Maintenance as MaintenanceView,
   NotFound as NotFoundView,
   SignIn as SignInView,
-  Tests as TestsView
+  Tests as TestsView,
+  SignOut as SignOutView
 } from './views';
 
 const Routes = () => {
@@ -20,28 +21,38 @@ const Routes = () => {
         to="/sign-in"
       />
       <RouteWithLayout
-        component={MaintenanceView}
-        exact
-        layout={MinimalLayout}
-        path="/maintenance"
+          isProtected={false}
+          component={MaintenanceView}
+          exact
+          layout={MinimalLayout}
+          path="/maintenance"
       />
       <RouteWithLayout
+          isProtected={false}
           component={SignInView}
           exact
           layout={MinimalLayout}
           path="/sign-in"
       />
       <RouteWithLayout
+          isProtected={true}
           component={TestsView}
           exact
-          layout={MinimalLayout}
-          path="/tests"
+          layout={MainLayout}
+          path="/dashboard"
       />
       <RouteWithLayout
-        component={NotFoundView}
-        exact
-        layout={MinimalLayout}
-        path="/not-found"
+          isProtected={true}
+          component={SignOutView}
+          exact
+          layout={MinimalLayout}
+          path="/sign-out"
+      />
+      <RouteWithLayout
+          component={NotFoundView}
+          exact
+          layout={MinimalLayout}
+          path="/not-found"
       />
       <Redirect to="/not-found" />
     </Switch>

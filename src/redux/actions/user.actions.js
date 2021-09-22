@@ -1,31 +1,33 @@
 import { push } from 'react-router-redux';
 import {
-  USER_LOGIN, USER_LOGIN_SUCCESS
+  USER_LOGIN_SUCCESS, USER_LOGOUT_SUCCESS
 } from '../../Constants';
 import {
   fetchSignInStart,
-  fetchSignInStop
+  fetchSignInStop, prepareCatch
 } from './ui.actions';
-
-
-const delay = ms => new Promise(res => setTimeout(res, ms));
+import axios from "axios";
 
 //#region AuthActions
 export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
   const user = response.profileObj;
   dispatch(fetchSignInStart());
-  await delay(5000).then(() => {
-    dispatch(signInSuccess({
-      id: '123kjnd32',
-      name: user.name,
-      googleId: user.googleId,
-      email: user.email,
-      image: user.imageUrl,
-    }));
-    dispatch(fetchSignInStop());
-    dispatch(push('/tests'))
+  axios({
+    method: 'POST',
+    url: `${process.env.REACT_APP_SERVER_URL}/auth/google`,
+    data: {tokenId: response.tokenObj.id_token},
+    withCredentials: true
+  }).then(response => {
+    if (response.status === 200) {
+      const email = user.email;
+      const {_id, googleId, displayName, image} = response.data.user;
+      dispatch(signInSuccess({id: _id, googleId, name:displayName, email, image}));
+      dispatch(fetchSignInStop());
+      dispatch(push('/dashboard'));
+    }
+  }).catch(err => {
+    dispatch(prepareCatch(err));
   });
-
 }
 
 const signInSuccess = (data) => ({
@@ -36,12 +38,10 @@ const signInSuccess = (data) => ({
 export const googleAuthSignInFailure = (response) => {
   console.log(response);
 }
-/*
 export const signOut = () => (dispatch) => {
-  dispatch(fetchSignOut());
   axios({
     method: 'GET',
-    url: 'http://localhost:3001/auth/logout',
+    url: `${process.env.REACT_APP_SERVER_URL}/auth/logout`,
     withCredentials: true
   }).then(response => {
     if (response.status === 200) {
@@ -49,8 +49,12 @@ export const signOut = () => (dispatch) => {
       dispatch(push('/sign-in'))
     }
   }).catch(err => {
-    console.error(err);
+    dispatch(prepareCatch(err));
   })
-};*/
+};
+
+export const signOutSuccess = () => (dispatch) => {
+  dispatch({type: USER_LOGOUT_SUCCESS});
+};
 
 //#endregion

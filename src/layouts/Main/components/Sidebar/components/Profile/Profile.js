@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
+import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,16 +23,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Profile = props => {
-  const { className, ...rest } = props;
+  const { className, user, ...rest } = props;
 
   const classes = useStyles();
 
-  const user = {
-    name: 'Shen Zhi',
-    avatar: '/images/avatars/avatar_11.png',
-    bio: 'Brain Director'
-  };
-
+  console.log(user);
   return (
     <div
       {...rest}
@@ -41,8 +37,8 @@ const Profile = props => {
         alt="Person"
         className={classes.avatar}
         component={RouterLink}
-        src={user.avatar}
-        to="/settings"
+        src={user.image}
+        to="/dashboard"
       />
       <Typography
         className={classes.name}
@@ -50,7 +46,7 @@ const Profile = props => {
       >
         {user.name}
       </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
+      <Typography variant="body2">{user.email}</Typography>
     </div>
   );
 };
@@ -59,4 +55,11 @@ Profile.propTypes = {
   className: PropTypes.string
 };
 
-export default Profile;
+const mapStateToProps = (state) => {
+  console.log(state);
+  return {
+    user: state.user,
+  }
+};
+
+export default connect(mapStateToProps)(Profile);
