@@ -3,8 +3,6 @@ import {
 } from '../../Constants';
 
 const initialState = {
-  id: '',
-  googleId: '',
   name: '',
   email: '',
   isAuthenticated: false,
@@ -22,8 +20,6 @@ export default (state = initialState, action) => {
     case USER_LOGOUT_SUCCESS:
       return {
         ...state,
-        id: '',
-        googleId: '',
         name: '',
         email: '',
         isAuthenticated: false,

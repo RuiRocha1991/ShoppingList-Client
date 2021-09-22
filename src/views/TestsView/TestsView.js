@@ -40,11 +40,7 @@ const TestsView = ({state}) => {
           >
             <div className={classes.content}>
               <Typography variant="h1">
-                {state.user.name}
-              </Typography>
-              <Typography variant="subtitle2">
-                You either tried some shady route or you came here by mistake.
-                Whichever it is, try using the navigation
+                Wellcome guys
               </Typography>
               <img
                   alt="Under development"

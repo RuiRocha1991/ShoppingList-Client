@@ -20,8 +20,8 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
   }).then(response => {
     if (response.status === 200) {
       const email = user.email;
-      const {_id, googleId, displayName, image} = response.data.user;
-      dispatch(signInSuccess({id: _id, googleId, name:displayName, email, image}));
+      const {displayName, image} = response.data.user;
+      dispatch(signInSuccess({name:displayName, email, image}));
       dispatch(fetchSignInStop());
       dispatch(push('/dashboard'));
     }

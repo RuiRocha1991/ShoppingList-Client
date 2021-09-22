@@ -27,7 +27,6 @@ const Profile = props => {
 
   const classes = useStyles();
 
-  console.log(user);
   return (
     <div
       {...rest}
@@ -56,7 +55,6 @@ Profile.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     user: state.user,
   }
