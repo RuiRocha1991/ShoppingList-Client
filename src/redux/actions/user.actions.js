@@ -3,15 +3,15 @@ import {
   USER_LOGIN_SUCCESS, USER_LOGOUT_SUCCESS
 } from '../../Constants';
 import {
-  fetchSignInStart,
-  fetchSignInStop, prepareCatch
+  fetchStart,
+  fetchStop, errorMessage, showErrorMessage
 } from './ui.actions';
 import axios from "axios";
 
 //#region AuthActions
 export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
   const user = response.profileObj;
-  dispatch(fetchSignInStart());
+  dispatch(fetchStart());
   axios({
     method: 'POST',
     url: `${process.env.REACT_APP_SERVER_URL}/auth/google`,
@@ -22,11 +22,11 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
       const email = user.email;
       const {displayName, image} = response.data.user;
       dispatch(signInSuccess({name:displayName, email, image}));
-      dispatch(fetchSignInStop());
+      dispatch(fetchStop());
       dispatch(push('/dashboard'));
     }
   }).catch(err => {
-    dispatch(prepareCatch(err));
+    dispatch(errorMessage(err));
   });
 }
 
@@ -35,7 +35,8 @@ const signInSuccess = (data) => ({
   payload: data
 });
 
-export const googleAuthSignInFailure = (response) => {
+export const googleAuthSignInFailure = (response) =>(dispatch) => {
+  dispatch(showErrorMessage(response));
   console.log(response);
 }
 export const signOut = () => (dispatch) => {
@@ -49,7 +50,9 @@ export const signOut = () => (dispatch) => {
       dispatch(push('/sign-in'))
     }
   }).catch(err => {
-    dispatch(prepareCatch(err));
+    dispatch(errorMessage(err));
+    dispatch(signOutSuccess());
+    dispatch(push('/sign-in'));
   })
 };
 

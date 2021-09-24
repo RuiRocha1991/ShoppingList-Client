@@ -4,9 +4,8 @@ import { makeStyles } from '@material-ui/styles';
 import {
   Grid,
   Button,
-  Typography, CircularProgress, Snackbar, IconButton
+  Typography, CircularProgress
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 
 import { Google as GoogleIcon } from 'icons';
 import GoogleLogin from 'react-google-login';
@@ -14,9 +13,7 @@ import {
   googleAuthSignInFailure,
   googleAuthSignInSuccess
 } from "../../redux/actions/user.actions";
-import {closeErrorMessage} from "../../redux/actions/ui.actions";
-
-
+import SnackbarCustom from "../../components/SnackbarCustom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -95,34 +92,11 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const SignIn = ({handleSignInSuccess, handleSignInFailure, isFetching, error, handleCloseErrorMessage}) => {
+const SignIn = ({handleSignInSuccess, handleSignInFailure, isFetching}) => {
   const classes = useStyles();
-  const action = (
-      <React.Fragment>
-        <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleCloseErrorMessage}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </React.Fragment>
-  );
   return (
     <div className={classes.root}>
-      <Snackbar
-          autoHideDuration={6000}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          open={error.isOpen}
-          onClose={handleCloseErrorMessage}
-          message={error.message}
-          action={action}
-      >
-      </Snackbar>
+      <SnackbarCustom />
       <Grid
         className={classes.grid}
         container
@@ -219,7 +193,6 @@ const SignIn = ({handleSignInSuccess, handleSignInFailure, isFetching, error, ha
 const mapStateToProps = (state) => ({
   isLogged: state.user.isAuthenticated,
   isFetching: state.ui.isFetching,
-  error: state.ui.error
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -228,9 +201,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   handleSignInFailure:(response) => {
     dispatch(googleAuthSignInFailure(response));
-  },
-  handleCloseErrorMessage: () => {
-    dispatch(closeErrorMessage());
   }
 })
 
