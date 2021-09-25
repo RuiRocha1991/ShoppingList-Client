@@ -40,7 +40,7 @@ const TestsView = ({state}) => {
           >
             <div className={classes.content}>
               <Typography variant="h1">
-                Wellcome guys
+                Welcome guys
               </Typography>
               <img
                   alt="Under development"
