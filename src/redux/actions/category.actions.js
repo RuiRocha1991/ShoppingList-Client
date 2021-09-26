@@ -6,6 +6,7 @@ import {
   showSuccessMessage
 } from "./ui.actions";
 import axios from "axios";
+import {CATEGORY_FETCH_ALL} from '../../Constants';
 
 export const createCategory =  (category) => (dispatch) => {
   dispatch(fetchStart());
@@ -19,14 +20,14 @@ export const createCategory =  (category) => (dispatch) => {
       dispatch(fetchStop());
       dispatch(closeDialog());
       dispatch(showSuccessMessage({message: response.data.message}))
-      dispatch(getAllCategories());
+      dispatch(fetchAllCategories());
     }
   }).catch(err => {
     dispatch(errorMessage(err.response.data));
   });
 }
 
-export const getAllCategories =  () => (dispatch) => {
+export const fetchAllCategories =  () => (dispatch) => {
   dispatch(fetchStart());
   axios({
     method: 'GET',
@@ -34,9 +35,15 @@ export const getAllCategories =  () => (dispatch) => {
     withCredentials: true
   }).then(response => {
     if (response.status === 200) {
+      dispatch(fecthAllCategoriesSuccess(response.data));
       dispatch(fetchStop());
     }
   }).catch(err => {
     dispatch(errorMessage(err));
   });
 }
+
+export const fecthAllCategoriesSuccess = (data) => ({
+  type: CATEGORY_FETCH_ALL,
+  payload: data
+});

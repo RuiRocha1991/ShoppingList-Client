@@ -19,10 +19,11 @@ import {
   Paper
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import ViewListIcon from '@material-ui/icons/ViewList';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getInitials} from "../../../../helpers";
 import mockData from './data';
+import moment from "moment";
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -50,8 +51,20 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const calculateLastUpdateTime = (lastUpdate) => {
+  const now = moment(new Date());
+
+  if(now.diff(lastUpdate,'days') > 0) {
+    return now.diff(lastUpdate,'days') + 'days';
+  } else if(now.diff(lastUpdate,'hours') > 0) {
+    return now.diff(lastUpdate,'hours') + 'hr';
+  } else {
+      return now.diff(lastUpdate,'minutes') + 'min'
+    }
+}
+
 const CategoryCard = props => {
-  const { className, product, ...rest } = props;
+  const { className, category, ...rest } = props;
 
   const classes = useStyles();
   const [products] = useState(mockData);
@@ -64,7 +77,7 @@ const CategoryCard = props => {
           className={classes.header}
           avatar={
             <Avatar aria-label="recipe" className={classes.avatar}>
-              {getInitials(product.title)}
+              {getInitials(category.name)}
             </Avatar>
           }
           action={
@@ -72,8 +85,8 @@ const CategoryCard = props => {
               <MoreVertIcon />
             </IconButton>
           }
-          title={product.title}
-          subheader={product.description}
+          title={category.name}
+          subheader={category.description}
       />
       <CardContent className={classes.content}>
         <Paper style={{maxHeight: 300, overflow: 'auto'}}>
@@ -112,19 +125,19 @@ const CategoryCard = props => {
               display="inline"
               variant="body2"
             >
-              Updated 2hr ago
+              Updated {calculateLastUpdateTime(category.updatedAt)} ago
             </Typography>
           </Grid>
           <Grid
             className={classes.statsItem}
             item
           >
-            <GetAppIcon className={classes.statsIcon} />
+            <ViewListIcon className={classes.statsIcon} />
             <Typography
               display="inline"
               variant="body2"
             >
-              {product.totalDownloads} Downloads
+              5 Shopping Lists
             </Typography>
           </Grid>
         </Grid>
@@ -135,7 +148,7 @@ const CategoryCard = props => {
 
 CategoryCard.propTypes = {
   className: PropTypes.string,
-  product: PropTypes.object.isRequired
+  category: PropTypes.object.isRequired
 };
 
 export default CategoryCard;

@@ -77,18 +77,6 @@ const MySnackbarContent = (props) => {
   );
 }
 const SnackbarCustom = ({ info, handleCloseInfoBox }) => {
-  const action = (
-      <React.Fragment>
-        <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleCloseInfoBox}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </React.Fragment>
-  );
   return (
 
       <Snackbar

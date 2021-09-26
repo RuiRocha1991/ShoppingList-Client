@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { IconButton, Grid, Typography } from '@material-ui/core';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-
+import {
+  Grid,
+  LinearProgress,
+  Box
+} from '@material-ui/core';
 import { CategoriesToolbar, CategoryCard } from './components';
-import mockData from './data';
+import { connect } from 'react-redux';
+import { fetchAllCategories } from '../../redux/actions/category.actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
+  },
+  processContent: {
+    height: 50,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center"
+  },
+  progress: {
+    margin: '0 16px'
   },
   content: {
     marginTop: theme.spacing(2)
@@ -22,44 +33,53 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Categories = () => {
+const Categories = ({onLoadPage, categories, isFetching, dialog}, props) => {
   const classes = useStyles();
-
-  const [products] = useState(mockData);
+  useEffect(() => {
+    onLoadPage();
+  }, [onLoadPage]);
 
   return (
     <div className={classes.root}>
       <CategoriesToolbar />
       <div className={classes.content}>
+        {!dialog.isOpen && isFetching &&
+        <Box component={'div'} boxShadow={3} className={classes.processContent} >
+          <LinearProgress className={classes.progress}/>
+        </Box>}
         <Grid
           container
           spacing={3}
         >
-          {products.map(product => (
+          {categories.map(category => (
             <Grid
               item
-              key={product.id}
+              key={category._id}
               lg={3}
               md={4}
               sm={6}
               xs={12}
             >
-              <CategoryCard product={product} />
+              <CategoryCard category={category} />
             </Grid>
           ))}
         </Grid>
-      </div>
-      <div className={classes.pagination}>
-        <Typography variant="caption">1-6 of 20</Typography>
-        <IconButton>
-          <ChevronLeftIcon />
-        </IconButton>
-        <IconButton>
-          <ChevronRightIcon />
-        </IconButton>
       </div>
     </div>
   );
 };
 
-export default Categories;
+const mapStateToProps = (state) => ({
+  isFetching: state.ui.isFetching,
+  dialog: state.ui.dialog,
+  categories: state.category.categories,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  onLoadPage: () => {
+    dispatch(fetchAllCategories());
+  },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+
