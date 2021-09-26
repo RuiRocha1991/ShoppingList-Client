@@ -55,7 +55,7 @@ const schema = {
     },
   },
   description: {
-    presence: {allowEmpty: false, message: 'is required'},
+    presence: {allowEmpty: true},
     length: {
       maximum: 50
     },
@@ -244,7 +244,7 @@ const CreateEditCategoryDialog = ({openDialog, category, handleClose, handleSave
         <DialogActionsCustom>
           {isFetching && <CircularProgress size={20} color='inherit' className={classes.progress} />}
           <Button
-            disabled={ formState.values.name.length === 0 || formState.values.description.length === 0 || isFetching}
+            disabled={ formState.values.name.length === 0 || isFetching}
             autoFocus
             color="primary"
             onClick={() => handleSave(formState.values, category)}

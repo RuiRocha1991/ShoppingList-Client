@@ -15,7 +15,7 @@ export const createCategory =  (category) => (dispatch) => {
     data: category,
     withCredentials: true
   }).then(response => {
-    if (response.status === 200) {
+    if (response.status === 201) {
       dispatch(fetchStop());
       dispatch(closeDialog());
       dispatch(showSuccessMessage({message: response.data.message}))
