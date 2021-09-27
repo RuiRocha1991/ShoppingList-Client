@@ -54,6 +54,7 @@
     "redux-persist": "6.0.0",
     "redux-thunk": "2.3.0",
     "underscore": "1.9.1",
+    "uuid": "^8.3.2",
     "validate.js": "0.13.1"
   },
   "devDependencies": {
