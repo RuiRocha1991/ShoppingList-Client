@@ -24,9 +24,12 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getInitials} from "../../../../helpers";
 import mockData from './data';
 import moment from "moment";
-import PopperCustom from "../../../../components/PopperCustom";
 import {connect} from "react-redux";
-import {openDialog} from "../../../../redux/actions/ui.actions";
+import {
+  openDeleteDialog,
+  openDialog
+} from "../../../../redux/actions/ui.actions";
+import PopperCustom from "../../../../components/PopperCustom";
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -88,7 +91,6 @@ const CategoryCard = props => {
       anchorEl: null
     }));
   };
-
 
   const classes = useStyles();
   const [products] = useState(mockData);
@@ -180,8 +182,8 @@ const mapDispatchToProps = (dispatch) => ({
   handleEdit: (category) => {
     dispatch(openDialog(category));
   },
-  handleDelete: () => {
-    dispatch(()=> console.log("Delete category"));
+  handleDelete: (category) => {
+    dispatch(openDeleteDialog(category));
   },
 })
 

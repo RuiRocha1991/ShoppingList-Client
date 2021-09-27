@@ -28,7 +28,7 @@ const PopperCustom = ({handleClose, isOpen, anchorEl, handleEdit, category, hand
           handleClose();
         }}><EditIcon  className={classes.icon} /> Edit</MenuItem>
         <MenuItem onClick={() => {
-          handleDelete(category._id);
+          handleDelete(category);
           handleClose();
         }}><DeleteIcon className={classes.icon} /> Delete</MenuItem>
       </Menu>

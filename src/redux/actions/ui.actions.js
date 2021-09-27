@@ -1,7 +1,13 @@
 import {
-  UI_CLOSE_DIALOG, UI_CLOSE_INFO,
+  UI_CLOSE_DELETE_DIALOG,
+  UI_CLOSE_DIALOG,
+  UI_CLOSE_INFO,
   UI_FETCHING_FALSE,
-  UI_FETCHING_TRUE, UI_OPEN_DIALOG, UI_SHOW_INFO_ERROR, UI_SHOW_INFO_SUCCESS,
+  UI_FETCHING_TRUE,
+  UI_OPEN_DELETE_DIALOG,
+  UI_OPEN_DIALOG,
+  UI_SHOW_INFO_ERROR,
+  UI_SHOW_INFO_SUCCESS,
 } from "../../Constants";
 
 export const fetchStart = () => ({
@@ -38,4 +44,13 @@ export const openDialog = (data) => ({
 
 export const closeDialog = () => {
   return { type: UI_CLOSE_DIALOG}
+};
+
+export const openDeleteDialog = (data) => ({
+  type: UI_OPEN_DELETE_DIALOG,
+  payload: data
+});
+
+export const closeDeleteDialog = () => {
+  return { type: UI_CLOSE_DELETE_DIALOG}
 };

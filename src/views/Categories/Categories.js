@@ -8,7 +8,8 @@ import {
 import {
   CategoriesToolbar,
   CategoryCard,
-  CreateEditCategoryDialog
+  CreateEditCategoryDialog,
+  DeleteDialog
 } from './components';
 import { connect } from 'react-redux';
 import { fetchAllCategories } from '../../redux/actions/category.actions';
@@ -37,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Categories = ({onLoadPage, categories, isFetching, dialog}, props) => {
+const Categories = ({onLoadPage, categories, isFetching, dialog, deleteDialog}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
@@ -47,11 +48,12 @@ const Categories = ({onLoadPage, categories, isFetching, dialog}, props) => {
     <div className={classes.root}>
      <CategoriesToolbar/>
       <div className={classes.content}>
-        {!dialog.isOpen && isFetching &&
+        {!deleteDialog.isOpen && !dialog.isOpen && isFetching &&
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
         {dialog.isOpen && <CreateEditCategoryDialog />}
+        {deleteDialog.isOpen && <DeleteDialog />}
         <Grid
           container
           spacing={3}
@@ -77,6 +79,7 @@ const Categories = ({onLoadPage, categories, isFetching, dialog}, props) => {
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
   dialog: state.ui.dialog,
+  deleteDialog: state.ui.deleteDialog,
   categories: state.category.categories,
 })
 

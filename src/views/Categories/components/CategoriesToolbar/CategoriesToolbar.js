@@ -4,9 +4,11 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 import { SearchInput} from 'components';
-import {SnackbarCustom} from "../../../../components";
-import { openDialog} from "../../../../redux/actions/ui.actions";
+
 import {connect} from "react-redux";
+import { openDialog} from "../../../../redux/actions/ui.actions";
+import SnackbarCustom
+  from "../../../../components/SnackbarCustom/SnackbarCustom";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -64,4 +66,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(CategoriesToolbar)
-
