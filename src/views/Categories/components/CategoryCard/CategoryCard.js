@@ -24,7 +24,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getInitials} from "../../../../helpers";
 import mockData from './data';
 import moment from "moment";
-import PopperCustom from "../../../../components/PopperCustom";
 import {connect} from "react-redux";
 import {
   openDeleteDialog,
