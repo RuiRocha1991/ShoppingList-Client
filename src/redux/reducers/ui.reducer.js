@@ -1,8 +1,9 @@
 import {
+  UI_CLOSE_DELETE_DIALOG,
   UI_CLOSE_DIALOG,
   UI_CLOSE_INFO,
   UI_FETCHING_FALSE,
-  UI_FETCHING_TRUE,
+  UI_FETCHING_TRUE, UI_OPEN_DELETE_DIALOG,
   UI_OPEN_DIALOG,
   UI_SHOW_INFO_ERROR,
   UI_SHOW_INFO_SUCCESS
@@ -17,7 +18,11 @@ const initialState = {
   },
   dialog: {
     isOpen: false,
-    object: undefined
+    objectToEdit: undefined
+  },
+  deleteDialog: {
+    isOpen: false,
+    category: undefined
   }
 }
 
@@ -67,7 +72,7 @@ export default (state = initialState, action) => {
           ...state,
           dialog: {
             isOpen: true,
-            object: action.payload
+            objectToEdit: action.payload
           }
       }
       case UI_CLOSE_DIALOG:
@@ -75,7 +80,23 @@ export default (state = initialState, action) => {
         ...state,
         dialog: {
           isOpen: false,
-          object: undefined
+          objectToEdit: undefined
+        }
+      }
+      case UI_OPEN_DELETE_DIALOG:
+        return {
+          ...state,
+          deleteDialog: {
+            isOpen: true,
+            category: action.payload
+          }
+      }
+      case UI_CLOSE_DELETE_DIALOG:
+      return {
+        ...state,
+        deleteDialog: {
+          isOpen: false,
+          category: undefined
         }
       }
     default:

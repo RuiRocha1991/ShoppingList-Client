@@ -3,7 +3,7 @@ import {
   fetchStop,
   errorMessage,
   closeDialog,
-  showSuccessMessage
+  showSuccessMessage, closeDeleteDialog
 } from "./ui.actions";
 import axios from "axios";
 import {CATEGORY_FETCH_ALL} from '../../Constants';
@@ -40,6 +40,24 @@ export const fetchAllCategories =  () => (dispatch) => {
     }
   }).catch(err => {
     dispatch(errorMessage(err));
+  });
+}
+
+export const deleteCategory = (category) => (dispatch) => {
+  dispatch(fetchStart());
+  axios({
+    method: 'DELETE',
+    url: `${process.env.REACT_APP_SERVER_URL}/category/${category._id}`,
+    withCredentials: true
+  }).then(response => {
+    if (response.status === 200) {
+      dispatch(fetchStop());
+      dispatch(closeDeleteDialog());
+      dispatch(showSuccessMessage({message: response.data.message}))
+      dispatch(fetchAllCategories());
+    }
+  }).catch(err => {
+    dispatch(errorMessage(err.response.data));
   });
 }
 
