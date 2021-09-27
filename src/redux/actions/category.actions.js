@@ -27,6 +27,25 @@ export const createCategory =  (category) => (dispatch) => {
   });
 }
 
+export const editCategory =  (newFormValues, category) => (dispatch) => {
+  dispatch(fetchStart());
+  axios({
+    method: 'PUT',
+    url: `${process.env.REACT_APP_SERVER_URL}/category/${category._id}`,
+    data: newFormValues,
+    withCredentials: true
+  }).then(response => {
+    if (response.status === 200) {
+      dispatch(fetchStop());
+      dispatch(closeDialog());
+      dispatch(showSuccessMessage({message: response.data.message}))
+      dispatch(fetchAllCategories());
+    }
+  }).catch(err => {
+    dispatch(errorMessage(err.response.data));
+  });
+}
+
 export const fetchAllCategories =  () => (dispatch) => {
   dispatch(fetchStart());
   axios({

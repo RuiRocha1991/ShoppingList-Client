@@ -5,7 +5,11 @@ import {
   LinearProgress,
   Box
 } from '@material-ui/core';
-import { CategoriesToolbar, CategoryCard } from './components';
+import {
+  CategoriesToolbar,
+  CategoryCard,
+  CreateEditCategoryDialog
+} from './components';
 import { connect } from 'react-redux';
 import { fetchAllCategories } from '../../redux/actions/category.actions';
 
@@ -37,16 +41,17 @@ const Categories = ({onLoadPage, categories, isFetching, dialog}, props) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
-  }, [onLoadPage]);
+  }, []);
 
   return (
     <div className={classes.root}>
-      <CategoriesToolbar />
+     <CategoriesToolbar/>
       <div className={classes.content}>
         {!dialog.isOpen && isFetching &&
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
+        {dialog.isOpen && <CreateEditCategoryDialog />}
         <Grid
           container
           spacing={3}

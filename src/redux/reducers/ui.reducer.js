@@ -17,7 +17,7 @@ const initialState = {
   },
   dialog: {
     isOpen: false,
-    object: undefined
+    objectToEdit: undefined
   }
 }
 
@@ -67,7 +67,7 @@ export default (state = initialState, action) => {
           ...state,
           dialog: {
             isOpen: true,
-            object: action.payload
+            objectToEdit: action.payload
           }
       }
       case UI_CLOSE_DIALOG:
@@ -75,7 +75,7 @@ export default (state = initialState, action) => {
         ...state,
         dialog: {
           isOpen: false,
-          object: undefined
+          objectToEdit: undefined
         }
       }
     default:

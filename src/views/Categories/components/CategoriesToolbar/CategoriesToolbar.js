@@ -3,14 +3,10 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
-
 import { SearchInput} from 'components';
-import {CreateEditCategoryDialog} from './components'
+import {SnackbarCustom} from "../../../../components";
+import { openDialog} from "../../../../redux/actions/ui.actions";
 import {connect} from "react-redux";
-import {closeDialog, openDialog} from "../../../../redux/actions/ui.actions";
-import {createCategory} from "../../../../redux/actions/category.actions";
-import SnackbarCustom
-  from "../../../../components/SnackbarCustom/SnackbarCustom";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -29,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CategoriesToolbar = props => {
-  const { className, handleSaveChanges, dialogConfig, handleOpenDialog, handleCloseDialog, isFetching, ...rest } = props;
+  const { className, handleOpenDialog, ...rest } = props;
 
   const classes = useStyles();
 
@@ -39,12 +35,6 @@ const CategoriesToolbar = props => {
       className={clsx(classes.root, className)}
     >
       <SnackbarCustom />
-      {dialogConfig && dialogConfig.isOpen && (<CreateEditCategoryDialog
-          handleClose={handleCloseDialog}
-          handleSave={handleSaveChanges}
-          openDialog={dialogConfig.isOpen}
-          isFetching={isFetching}
-      />)}
       <div className={classes.row}>
         <SearchInput
             className={classes.searchInput}
@@ -67,30 +57,11 @@ CategoriesToolbar.propTypes = {
   className: PropTypes.string
 };
 
-const mapStateToProps = (state) => ({
-  dialogConfig: state.ui.dialog,
-  isFetching: state.ui.isFetching
-})
-
 const mapDispatchToProps = (dispatch) => ({
-  handleSaveChanges: (newFormValues, category) => {
-    let newCategory;
-    if (category) {
-      newCategory = {
-        ...category,
-      }
-      dispatch(() => console.log("edit category"));
-    } else {
-      dispatch(createCategory(newFormValues));
-    }
-
-  },
   handleOpenDialog: () => {
     dispatch(openDialog(undefined));
-  },
-  handleCloseDialog: () => {
-    dispatch(closeDialog());
-  },
-})
+  }
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoriesToolbar)
+export default connect(null, mapDispatchToProps)(CategoriesToolbar)
+

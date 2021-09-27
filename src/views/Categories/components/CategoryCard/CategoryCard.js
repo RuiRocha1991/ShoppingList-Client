@@ -16,7 +16,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  Paper
+  Paper,
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -24,6 +24,9 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getInitials} from "../../../../helpers";
 import mockData from './data';
 import moment from "moment";
+import PopperCustom from "../../../../components/PopperCustom";
+import {connect} from "react-redux";
+import {openDialog} from "../../../../redux/actions/ui.actions";
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -64,7 +67,28 @@ const calculateLastUpdateTime = (lastUpdate) => {
 }
 
 const CategoryCard = props => {
-  const { className, category, ...rest } = props;
+  const { className, category, handleEdit, handleDelete, ...rest } = props;
+  const [state, setState] = React.useState({
+    anchorEl: null,
+    isOpen: false
+  });
+
+  const handleOpen = (event) => {
+    setState((state) => ({
+      ...state,
+      isOpen: !state.isOpen,
+      anchorEl: event.currentTarget
+    }));
+  };
+
+  const handleClose = () => {
+    setState((state) => ({
+      ...state,
+      isOpen: false,
+      anchorEl: null
+    }));
+  };
+
 
   const classes = useStyles();
   const [products] = useState(mockData);
@@ -81,7 +105,7 @@ const CategoryCard = props => {
             </Avatar>
           }
           action={
-            <IconButton aria-label="settings">
+            <IconButton aria-label="settings" onClick={(event) => handleOpen(event)} aria-haspopup="true">
               <MoreVertIcon />
             </IconButton>
           }
@@ -89,6 +113,7 @@ const CategoryCard = props => {
           subheader={category.description}
       />
       <CardContent className={classes.content}>
+        <PopperCustom anchorEl={state.anchorEl} isOpen={state.isOpen} handleClose={handleClose} handleEdit={handleEdit} handleDelete={handleDelete} category={category}/>
         <Paper style={{maxHeight: 300, overflow: 'auto'}}>
           <List>
             {products.map((product, i) => (
@@ -151,4 +176,13 @@ CategoryCard.propTypes = {
   category: PropTypes.object.isRequired
 };
 
-export default CategoryCard;
+const mapDispatchToProps = (dispatch) => ({
+  handleEdit: (category) => {
+    dispatch(openDialog(category));
+  },
+  handleDelete: () => {
+    dispatch(()=> console.log("Delete category"));
+  },
+})
+
+export default connect(null, mapDispatchToProps)(CategoryCard);

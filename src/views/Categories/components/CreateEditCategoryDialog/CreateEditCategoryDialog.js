@@ -10,6 +10,12 @@ import {
   withStyles
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import {
+  createCategory,
+  editCategory
+} from "../../../../redux/actions/category.actions";
+import {closeDialog} from "../../../../redux/actions/ui.actions";
+import {connect} from "react-redux";
 
 
 const styles = (theme) => ({
@@ -109,36 +115,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateEditCategoryDialog = ({openDialog, category, handleClose, handleSave, isFetching}) => {
-  const [formState, setFormState] = useState(() => {
-    let categoryObj = undefined;
-    let remainsObj = undefined;
-    if (category) {
-      categoryObj = {
-        name: category.name ,
-       description: category.description
-      };
-      remainsObj = {
-        name: schema.name.length.maximum - category.name.length,
-        description: schema.description.length.maximum - category.description.length,
-      }
-    } else {
-      categoryObj = {
-        name: '' ,
-        description: ''
-      }
-      remainsObj = {
-        name: schema.name.length.maximum,
-        description: schema.description.length.maximum,
-      }
-    }
-    return {
+const CreateEditCategoryDialog = ({dialogConfig, category, handleClose, handleSave, isFetching}) => {
+  const [formState, setFormState] = useState( {
       isValid: false,
-      values: categoryObj,
+      values: {
+        name: category ? category.name : '',
+        description: category ? category.description : '',
+      },
       touched: {},
-      remaining: remainsObj,
+      remaining: {
+        name: category ? schema.name.length.maximum - category.name.length : schema.name.length.maximum,
+        description: category ? schema.description.length.maximum - category.description.length : schema.description.length.maximum
+      },
       errors: {}
-    }
   });
 
   useEffect(() => {
@@ -175,12 +164,10 @@ const CreateEditCategoryDialog = ({openDialog, category, handleClose, handleSave
     }));
   };
 
-  const calculateRemaining = (target) => (
-      {
+  const calculateRemaining = (target) => ({
         [target.name]: schema[target.name].length.maximum - target.value.length
-      }
-  )
-  
+      })
+
   return (
     <div>
       <Dialog
@@ -193,8 +180,7 @@ const CreateEditCategoryDialog = ({openDialog, category, handleClose, handleSave
             handleClose();
           }
         }}
-        open={openDialog}
-
+        open={dialogConfig.isOpen}
       >
         <DialogTitleCustom
           id="customized-dialog-title"
@@ -257,4 +243,24 @@ const CreateEditCategoryDialog = ({openDialog, category, handleClose, handleSave
   );
 }
 
-export default CreateEditCategoryDialog;
+const mapStateToProps = (state) => ({
+  dialogConfig: state.ui.dialog,
+  isFetching: state.ui.isFetching,
+  category: state.ui.dialog.objectToEdit
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  handleSave: (newFormValues, category) => {
+    if (category) {
+      dispatch(editCategory(newFormValues, category));
+    } else {
+      dispatch(createCategory(newFormValues));
+    }
+
+  },
+  handleClose: () => {
+    dispatch(closeDialog());
+  },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateEditCategoryDialog)

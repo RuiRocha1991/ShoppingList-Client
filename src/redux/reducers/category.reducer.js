@@ -3,7 +3,7 @@ import {
 } from '../../Constants';
 
 const initialState = {
-  category: {},
+  categoryToEdit: undefined,
   categories: []
 }
 
