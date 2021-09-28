@@ -38,10 +38,10 @@ const CategoriesToolbar = props => {
     >
       <SnackbarCustom />
       <div className={classes.row}>
-        <SearchInput
+        {/*<SearchInput
             className={classes.searchInput}
             placeholder="Search product"
-        />
+        />*/}
         <span className={classes.spacer} />
         <Button
           color="primary"
