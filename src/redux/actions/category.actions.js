@@ -60,7 +60,6 @@ export const fetchAllCategories =  () => (dispatch) => {
     withCredentials: true
   }).then(response => {
     if (response.status === 200) {
-      console.log(response.data.categories)
       dispatch(fecthAllCategoriesSuccess(response.data.categories));
       dispatch(fetchStop());
     }

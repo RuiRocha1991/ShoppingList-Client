@@ -21,7 +21,6 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
     withCredentials: true
   }).then(response => {
     if (response.status === 200) {
-      console.log(response.data.token)
       const email = user.email;
       const {displayName, image} = response.data.user;
       dispatch(signInSuccess({name:displayName, email, image}));
