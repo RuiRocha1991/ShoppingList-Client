@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import {CATEGORY_FETCH_ALL} from '../../Constants';
 import store from "../store";
+import {logoutFinally} from "./user.actions";
 
 export const createCategory =  (category) => (dispatch) => {
   dispatch(fetchStart());
@@ -27,6 +28,9 @@ export const createCategory =  (category) => (dispatch) => {
     }
   }).catch(err => {
     dispatch(errorMessage(err.response.data));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
   });
 }
 export const editCategory =  (newFormValues, category) => (dispatch) => {
@@ -47,6 +51,9 @@ export const editCategory =  (newFormValues, category) => (dispatch) => {
     }
   }).catch(err => {
     dispatch(errorMessage(err.response.data));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
   });
 }
 
@@ -65,6 +72,9 @@ export const fetchAllCategories =  () => (dispatch) => {
     }
   }).catch(err => {
     dispatch(errorMessage(err));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
   });
 }
 
@@ -85,6 +95,9 @@ export const deleteCategory = (category) => (dispatch) => {
     }
   }).catch(err => {
     dispatch(errorMessage(err.response.data));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
   });
 }
 

@@ -21,9 +21,8 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
     withCredentials: true
   }).then(response => {
     if (response.status === 200) {
-      const email = user.email;
-      const {displayName, image} = response.data.user;
-      dispatch(signInSuccess({name:displayName, email, image}));
+      const {name, image, email} = response.data.user;
+      dispatch(signInSuccess({name, email, image}));
       dispatch(addToken(response.data.token));
       dispatch(fetchStop());
       // make a dispacth to add token to store
@@ -41,7 +40,8 @@ const signInSuccess = (data) => ({
 
 export const googleAuthSignInFailure = (response) =>(dispatch) => {
   dispatch(showErrorMessage(response));
-  console.log(response);
+  dispatch(signOutSuccess());
+  dispatch(push('/sign-in'))
 }
 export const signOut = () => (dispatch) => {
   const token = store.getState().user.token;
@@ -57,8 +57,7 @@ export const signOut = () => (dispatch) => {
     }
   }).catch(err => {
     dispatch(errorMessage(err));
-    dispatch(signOutSuccess());
-    dispatch(push('/sign-in'));
+    dispatch(logoutFinally());
   })
 };
 
@@ -66,10 +65,14 @@ export const signOutSuccess = () => (dispatch) => {
   dispatch({type: USER_LOGOUT_SUCCESS});
 };
 
-
 export const addToken = (token) => (dispatch) => {
   if (store.getState().user.token !== token){
   dispatch({type: USER_ADD_TOKEN, payload: token});
   }
 };
+
+export const logoutFinally = () => (dispatch) => {
+  dispatch(signOutSuccess());
+  dispatch(push('/sign-in'));
+}
 //#endregion

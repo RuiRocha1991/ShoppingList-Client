@@ -4,6 +4,7 @@ import {
 } from '../../Constants';
 
 const initialState = {
+  id: '',
   name: '',
   email: '',
   isAuthenticated: false,
@@ -26,6 +27,8 @@ export default (state = initialState, action) => {
         email: '',
         isAuthenticated: false,
         image: '',
+        id: '',
+        token: ''
       }
     case USER_ADD_TOKEN:
       return {

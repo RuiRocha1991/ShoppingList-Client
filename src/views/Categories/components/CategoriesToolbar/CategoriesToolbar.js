@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
-import { SearchInput} from 'components';
 
 import {connect} from "react-redux";
 import { openDialog} from "../../../../redux/actions/ui.actions";
@@ -38,10 +37,6 @@ const CategoriesToolbar = props => {
     >
       <SnackbarCustom />
       <div className={classes.row}>
-        {/*<SearchInput
-            className={classes.searchInput}
-            placeholder="Search product"
-        />*/}
         <span className={classes.spacer} />
         <Button
           color="primary"

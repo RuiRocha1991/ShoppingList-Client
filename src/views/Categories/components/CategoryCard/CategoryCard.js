@@ -22,7 +22,6 @@ import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getInitials} from "../../../../helpers";
-import mockData from './data';
 import moment from "moment";
 import {connect} from "react-redux";
 import {
@@ -93,7 +92,7 @@ const CategoryCard = props => {
   };
 
   const classes = useStyles();
-  const [products] = useState(mockData);
+  const items = [];
   return (
     <Card
       {...rest}
@@ -118,13 +117,13 @@ const CategoryCard = props => {
         <PopperCustom anchorEl={state.anchorEl} isOpen={state.isOpen} handleClose={handleClose} handleEdit={handleEdit} handleDelete={handleDelete} category={category}/>
         <Paper style={{maxHeight: 300, overflow: 'auto'}}>
           <List>
-            {products.map((product, i) => (
+            {items.map((item, i) => (
                 <ListItem
-                    divider={i < products.length - 1}
-                    key={product.id}
+                    divider={i < item.length - 1}
+                    key={item._id}
                 >
                   <ListItemText
-                      primary={product.name}
+                      primary={item.name}
                   />
                   <IconButton
                       edge="end"

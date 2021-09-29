@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles';
 import {
   Grid,
   LinearProgress,
-  Box
+  Box,
 } from '@material-ui/core';
 import {
   CategoriesToolbar,
@@ -54,23 +54,23 @@ const Categories = ({onLoadPage, categories, isFetching, dialog, deleteDialog}) 
         </Box>}
         {dialog.isOpen && <CreateEditCategoryDialog />}
         {deleteDialog.isOpen && <DeleteDialog />}
-        <Grid
-          container
-          spacing={3}
-        >
-          {(!isFetching || (isFetching && (dialog.isOpen || deleteDialog.isOpen))) && categories.map(category => (
-            <Grid
-              item
-              key={category._id}
-              lg={3}
-              md={4}
-              sm={6}
-              xs={12}
-            >
-              <CategoryCard category={category} />
-            </Grid>
-          ))}
-        </Grid>
+          <Grid
+              container
+              spacing={3}
+          >
+            {(!isFetching || (isFetching && (dialog.isOpen || deleteDialog.isOpen))) && categories.map(category => (
+                <Grid
+                    item
+                    key={category._id}
+                    lg={3}
+                    md={4}
+                    sm={6}
+                    xs={12}
+                >
+                  <CategoryCard category={category} />
+                </Grid>
+            ))}
+          </Grid>
       </div>
     </div>
   );
