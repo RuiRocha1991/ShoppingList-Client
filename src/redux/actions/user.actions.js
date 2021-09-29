@@ -1,5 +1,6 @@
 import { push } from 'react-router-redux';
 import {
+  USER_ADD_TOKEN,
   USER_LOGIN_SUCCESS, USER_LOGOUT_SUCCESS
 } from '../../Constants';
 import {
@@ -7,6 +8,7 @@ import {
   fetchStop, errorMessage, showErrorMessage
 } from './ui.actions';
 import axios from "axios";
+import store from "../store";
 
 //#region AuthActions
 export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
@@ -19,10 +21,13 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
     withCredentials: true
   }).then(response => {
     if (response.status === 200) {
+      console.log(response.data.token)
       const email = user.email;
       const {displayName, image} = response.data.user;
       dispatch(signInSuccess({name:displayName, email, image}));
+      dispatch(addToken(response.data.token));
       dispatch(fetchStop());
+      // make a dispacth to add token to store
       dispatch(push('/dashboard'));
     }
   }).catch(err => {
@@ -40,10 +45,12 @@ export const googleAuthSignInFailure = (response) =>(dispatch) => {
   console.log(response);
 }
 export const signOut = () => (dispatch) => {
+  const token = store.getState().user.token;
   axios({
     method: 'GET',
     url: `${process.env.REACT_APP_SERVER_URL}/auth/logout`,
-    withCredentials: true
+    withCredentials: true,
+    headers: { token },
   }).then(response => {
     if (response.status === 200) {
       dispatch(signOutSuccess());
@@ -60,4 +67,10 @@ export const signOutSuccess = () => (dispatch) => {
   dispatch({type: USER_LOGOUT_SUCCESS});
 };
 
+
+export const addToken = (token) => (dispatch) => {
+  if (store.getState().user.token !== token){
+  dispatch({type: USER_ADD_TOKEN, payload: token});
+  }
+};
 //#endregion

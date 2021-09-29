@@ -58,7 +58,7 @@ const Categories = ({onLoadPage, categories, isFetching, dialog, deleteDialog}) 
           container
           spacing={3}
         >
-          {categories.map(category => (
+          {(!isFetching || (isFetching && (dialog.isOpen || deleteDialog.isOpen))) && categories.map(category => (
             <Grid
               item
               key={category._id}
