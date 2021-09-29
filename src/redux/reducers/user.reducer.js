@@ -1,4 +1,5 @@
 import {
+  USER_ADD_TOKEN,
   USER_LOGIN_SUCCESS, USER_LOGOUT_SUCCESS
 } from '../../Constants';
 
@@ -7,6 +8,7 @@ const initialState = {
   email: '',
   isAuthenticated: false,
   image: '',
+  token: ''
 }
 
 export default (state = initialState, action) => {
@@ -24,6 +26,11 @@ export default (state = initialState, action) => {
         email: '',
         isAuthenticated: false,
         image: '',
+      }
+    case USER_ADD_TOKEN:
+      return {
+        ...state,
+       token: action.payload
       }
     default:
       return state
