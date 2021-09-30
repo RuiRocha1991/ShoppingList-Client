@@ -70,7 +70,7 @@ const calculateLastUpdateTime = (lastUpdate) => {
 
 const CategoryCard = props => {
   const { className, category, handleEdit, handleDelete, ...rest } = props;
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     anchorEl: null,
     isOpen: false
   });

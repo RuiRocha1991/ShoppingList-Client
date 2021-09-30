@@ -12,7 +12,6 @@ import store from "../store";
 
 //#region AuthActions
 export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
-  const user = response.profileObj;
   dispatch(fetchStart());
   axios({
     method: 'POST',
