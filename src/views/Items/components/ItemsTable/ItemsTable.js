@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   actions: {
     marginRight: '16px',
   },
-  hiddenCollumns: {
+  hiddenColumns: {
     [theme.breakpoints.down('md')]: {
       display: 'none'
     }
@@ -48,7 +48,7 @@ const ItemsTable = props => {
 
   const classes = useStyles();
 
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(2);
   const [page, setPage] = useState(0);
 
   const handlePageChange = (event, page) => {
@@ -71,16 +71,16 @@ const ItemsTable = props => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell className={classes.hiddenCollumns}>Description</TableCell>
-                  <TableCell className={classes.hiddenCollumns}>Unit M</TableCell>
-                  <TableCell className={classes.hiddenCollumns}>Default Quantity</TableCell>
-                  <TableCell className={classes.hiddenCollumns}>Shopping List</TableCell>
+                  <TableCell className={classes.hiddenColumns}>Description</TableCell>
+                  <TableCell className={classes.hiddenColumns}>Unit M</TableCell>
+                  <TableCell className={classes.hiddenColumns}>Default Quantity</TableCell>
+                  <TableCell className={classes.hiddenColumns}>Shopping List</TableCell>
                   <TableCell>Category</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {items.slice(0, rowsPerPage).map(item => (
+                {items.items.slice(0, rowsPerPage).map(item => (
                   <TableRow
                     className={classes.tableRow}
                     hover
@@ -89,15 +89,15 @@ const ItemsTable = props => {
                     <TableCell>
                       <Typography variant="body1">{item.name}</Typography>
                     </TableCell>
-                    <TableCell className={classes.hiddenCollumns}>{item.name}</TableCell>
+                    <TableCell className={classes.hiddenColumns}>{item.name}</TableCell>
                     <TableCell>
                       {item.name}
                     </TableCell>
-                    <TableCell className={classes.hiddenCollumns}>{item.name}</TableCell>
-                    <TableCell className={classes.hiddenCollumns}>
+                    <TableCell className={classes.hiddenColumns}>{item.name}</TableCell>
+                    <TableCell className={classes.hiddenColumns}>
                       {item.name}
                     </TableCell>
-                    <TableCell className={classes.hiddenCollumns}>
+                    <TableCell className={classes.hiddenColumns}>
                       {item.name}
                     </TableCell>
                     <TableCell style={{ width: 100 }}>
@@ -113,12 +113,12 @@ const ItemsTable = props => {
       <CardActions className={classes.tableActions}>
         <TablePagination
           component="div"
-          count={items.length}
+          count={items.items.length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleRowsPerPageChange}
-          page={page}
+          page={items.currentPage}
           rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[2, 5, 10, 25]}
         />
       </CardActions>
     </Card>
@@ -127,7 +127,7 @@ const ItemsTable = props => {
 
 ItemsTable.propTypes = {
   className: PropTypes.string,
-  users: PropTypes.array.isRequired
+  items: PropTypes.object.isRequired
 };
 
 export default ItemsTable;

@@ -4,7 +4,12 @@ import {
 
 const initialState = {
   selectedItem: undefined,
-  items: []
+  items: {
+    totalItems: 0,
+    items: [],
+    totalPages: 0,
+    currentPage: 0
+  }
 }
 
 export default (state = initialState, action) => {
@@ -12,7 +17,10 @@ export default (state = initialState, action) => {
     case ITEM_FETCH_ALL:
       return {
         ...state,
-        items: action.payload
+        items: {
+          ...state.items,
+          items: action.payload,
+        }
       }
     default:
       return state
