@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -45,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ItemsTable = props => {
-  const { className, users, ...rest } = props;
+  const { className, items, ...rest } = props;
 
   const classes = useStyles();
 
@@ -81,26 +80,25 @@ const ItemsTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.slice(0, rowsPerPage).map(user => (
+                {items.slice(0, rowsPerPage).map(item => (
                   <TableRow
                     className={classes.tableRow}
                     hover
-                    key={user.id}
+                    key={item._id}
                   >
                     <TableCell>
-                      <Typography variant="body1">{user.name}</Typography>
+                      <Typography variant="body1">{item.name}</Typography>
                     </TableCell>
-                    <TableCell className={classes.hiddenCollumns}>{user.email}</TableCell>
+                    <TableCell className={classes.hiddenCollumns}>{item.name}</TableCell>
                     <TableCell>
-                      {user.address.city}, {user.address.state},{' '}
-                      {user.address.country}
+                      {item.name}
                     </TableCell>
-                    <TableCell className={classes.hiddenCollumns}>{user.phone}</TableCell>
+                    <TableCell className={classes.hiddenCollumns}>{item.name}</TableCell>
                     <TableCell className={classes.hiddenCollumns}>
-                      {moment(user.createdAt).format('DD/MM/YYYY')}
+                      {item.name}
                     </TableCell>
                     <TableCell className={classes.hiddenCollumns}>
-                      {moment(user.createdAt).format('DD/MM/YYYY')}
+                      {item.name}
                     </TableCell>
                     <TableCell style={{ width: 100 }}>
                       <EditIcon className={classes.actions}/> <DeleteIcon/>
@@ -115,7 +113,7 @@ const ItemsTable = props => {
       <CardActions className={classes.tableActions}>
         <TablePagination
           component="div"
-          count={users.length}
+          count={items.length}
           onChangePage={handlePageChange}
           onChangeRowsPerPage={handleRowsPerPageChange}
           page={page}

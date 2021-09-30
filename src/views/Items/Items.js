@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 
 import { ItemsToolbar, ItemsTable } from './components';
-import mockData from './data';
+import {connect} from "react-redux";
+import {fetchAllItemsByUser} from "../../redux/actions/item.actions";
+import {Box, LinearProgress} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -10,22 +12,46 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     marginTop: theme.spacing(2)
-  }
+  },
+  processContent: {
+    height: 50,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center"
+  },
+  progress: {
+    margin: '0 16px'
+  },
 }));
 
-const Items = () => {
+const Items = ({onLoadPage, items, isFetching}) => {
   const classes = useStyles();
-
-  const [users] = useState(mockData);
-
+  useEffect(() => {
+    onLoadPage();
+  },[]);
   return (
     <div className={classes.root}>
       <ItemsToolbar />
       <div className={classes.content}>
-        <ItemsTable users={users} />
+        {isFetching &&
+        <Box component={'div'} boxShadow={3} className={classes.processContent} >
+          <LinearProgress className={classes.progress}/>
+        </Box>}
+        {!isFetching && <ItemsTable items={items}/>}
       </div>
     </div>
   );
 };
 
-export default Items;
+const mapStateToProps = (state) => ({
+  isFetching: state.ui.isFetching,
+  items: state.item.items,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  onLoadPage: () => {
+    dispatch(fetchAllItemsByUser());
+  },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Items);

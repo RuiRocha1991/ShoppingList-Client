@@ -22,3 +22,9 @@ export const CATEGORY_ADD = 'CATEGORY_ADD';
 export const CATEGORY_EDIT = 'CATEGORY_EDIT';
 export const CATEGORY_FETCH_ALL = 'CATEGORY_FETCH_ALL';
 //#endregion
+
+//#region ITEM CONSTANTS
+export const ITEM_ADD = 'ITEM_ADD';
+export const ITEM_EDIT = 'ITEM_EDIT';
+export const ITEM_FETCH_ALL = 'ITEM_FETCH_ALL';
+//#endregion

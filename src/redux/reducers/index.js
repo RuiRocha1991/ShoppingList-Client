@@ -3,6 +3,7 @@ import { connectRouter } from 'connected-react-router';
 import user from './user.reducer';
 import ui from './ui.reducer';
 import category from './category.reducer'
+import item from './item.reducer'
 
 
 const rootReducer = (history) =>
@@ -10,6 +11,7 @@ const rootReducer = (history) =>
     user,
     ui,
     category,
+    item,
     router : connectRouter(history)
   })
 
