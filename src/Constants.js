@@ -6,6 +6,8 @@ export const UI_SHOW_INFO_SUCCESS = 'UI_SHOW_INFO_SUCCESS';
 export const UI_CLOSE_INFO = 'UI_CLOSE_INFO';
 export const UI_OPEN_DIALOG = 'UI_OPEN_DIALOG';
 export const UI_CLOSE_DIALOG = 'UI_CLOSE_DIALOG';
+export const UI_OPEN_ITEM_DIALOG = 'UI_OPEN_ITEM_DIALOG';
+export const UI_CLOSE_ITEM_DIALOG = 'UI_CLOSE_ITEM_DIALOG';
 export const UI_OPEN_DELETE_DIALOG = 'UI_OPEN_DELETE_DIALOG';
 export const UI_CLOSE_DELETE_DIALOG = 'UI_CLOSE_DELETE_DIALOG';
 //#endregion
@@ -27,4 +29,6 @@ export const CATEGORY_FETCH_ALL = 'CATEGORY_FETCH_ALL';
 export const ITEM_ADD = 'ITEM_ADD';
 export const ITEM_EDIT = 'ITEM_EDIT';
 export const ITEM_FETCH_ALL = 'ITEM_FETCH_ALL';
+export const ITEM_OPEN_DIALOG = 'ITEM_OPEN_DIALOG';
+export const ITEM_CLOSE_DIALOG = 'ITEM_CLOSE_DIALOG';
 //#endregion

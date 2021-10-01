@@ -5,6 +5,9 @@ import { ItemsToolbar, ItemsTable } from './components';
 import {connect} from "react-redux";
 import {fetchAllItemsByUser} from "../../redux/actions/item.actions";
 import {Box, LinearProgress} from "@material-ui/core";
+import {CreateEditCategoryDialog} from "../Categories/components";
+import CreateEditItemDialog from "./components/CreateEditItemDialog";
+import SnackbarCustom from "../../components/SnackbarCustom/SnackbarCustom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Items = ({onLoadPage, items, isFetching}) => {
+const Items = ({onLoadPage, items, isFetching,isItemDialogOpen}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
@@ -32,11 +35,13 @@ const Items = ({onLoadPage, items, isFetching}) => {
   return (
     <div className={classes.root}>
       <ItemsToolbar />
+      <SnackbarCustom />
       <div className={classes.content}>
         {isFetching &&
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
+        {isItemDialogOpen && <CreateEditItemDialog />}
         {!isFetching && <ItemsTable items={items}/>}
       </div>
     </div>
@@ -46,6 +51,7 @@ const Items = ({onLoadPage, items, isFetching}) => {
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
   items: state.item.items,
+  isItemDialogOpen: state.ui.isItemDialogOpen
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,10 +1,10 @@
 import {
   UI_CLOSE_DELETE_DIALOG,
   UI_CLOSE_DIALOG,
-  UI_CLOSE_INFO,
+  UI_CLOSE_INFO, UI_CLOSE_ITEM_DIALOG,
   UI_FETCHING_FALSE,
   UI_FETCHING_TRUE, UI_OPEN_DELETE_DIALOG,
-  UI_OPEN_DIALOG,
+  UI_OPEN_DIALOG, UI_OPEN_ITEM_DIALOG,
   UI_SHOW_INFO_ERROR,
   UI_SHOW_INFO_SUCCESS
 } from '../../Constants';
@@ -23,7 +23,8 @@ const initialState = {
   deleteDialog: {
     isOpen: false,
     category: undefined
-  }
+  },
+  isItemDialogOpen: false
 }
 
 export default (state = initialState, action) => {
@@ -98,6 +99,16 @@ export default (state = initialState, action) => {
           isOpen: false,
           category: undefined
         }
+      }
+    case UI_OPEN_ITEM_DIALOG:
+      return {
+        ...state,
+        isItemDialogOpen: true
+      }
+    case UI_CLOSE_ITEM_DIALOG:
+      return {
+        ...state,
+        isItemDialogOpen: false
       }
     default:
       return state

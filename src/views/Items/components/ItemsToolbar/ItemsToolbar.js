@@ -5,6 +5,10 @@ import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
 import { SearchInput } from 'components';
+import {
+  openItemsDialog
+} from "../../../../redux/actions/ui.actions";
+import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -23,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ItemsToolbar = props => {
-  const { className, ...rest } = props;
+  const { className, handleOpenDialog, ...rest } = props;
 
   const classes = useStyles();
 
@@ -41,6 +45,7 @@ const ItemsToolbar = props => {
         <Button
           color="primary"
           variant="contained"
+          onClick={handleOpenDialog}
         >
           Add Item
         </Button>
@@ -53,4 +58,10 @@ ItemsToolbar.propTypes = {
   className: PropTypes.string
 };
 
-export default ItemsToolbar;
+const mapDispatchToProps = (dispatch) => ({
+  handleOpenDialog: () => {
+    dispatch(openItemsDialog(undefined));
+  }
+});
+
+export default connect(null, mapDispatchToProps)(ItemsToolbar)

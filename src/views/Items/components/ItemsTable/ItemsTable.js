@@ -89,17 +89,11 @@ const ItemsTable = props => {
                     <TableCell>
                       <Typography variant="body1">{item.name}</Typography>
                     </TableCell>
-                    <TableCell className={classes.hiddenColumns}>{item.name}</TableCell>
-                    <TableCell>
-                      {item.name}
-                    </TableCell>
-                    <TableCell className={classes.hiddenColumns}>{item.name}</TableCell>
-                    <TableCell className={classes.hiddenColumns}>
-                      {item.name}
-                    </TableCell>
-                    <TableCell className={classes.hiddenColumns}>
-                      {item.name}
-                    </TableCell>
+                    <TableCell className={classes.hiddenColumns}>{item.description}</TableCell>
+                    <TableCell className={classes.hiddenColumns}>{item.unitMeasurement}</TableCell>
+                    <TableCell className={classes.hiddenColumns}>{item.defaultQuantity}</TableCell>
+                    <TableCell className={classes.hiddenColumns}>0</TableCell>
+                    <TableCell >{item.category.name}</TableCell>
                     <TableCell style={{ width: 100 }}>
                       <EditIcon className={classes.actions}/> <DeleteIcon/>
                     </TableCell>
