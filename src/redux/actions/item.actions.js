@@ -1,4 +1,5 @@
 import {
+  closeDeleteDialog,
   closeItemsDialog,
   errorMessage,
   fetchStart,
@@ -9,6 +10,7 @@ import store from "../store";
 import axios from "axios";
 import {logoutFinally} from "./user.actions";
 import {ITEM_FETCH_ALL} from "../../Constants";
+import {fetchAllCategories} from "./category.actions";
 
 export const fetchAllItemsByUser =  () => (dispatch) => {
   dispatch(fetchStart());
@@ -65,6 +67,28 @@ export const editItem =  (newFormValues, item) => (dispatch) => {
       successMessage(response.data.message, dispatch);
     }
   }).catch(err => {
+    dispatch(errorMessage(err.response.data));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+}
+
+export const deleteItem = (item) => (dispatch) => {
+  dispatch(fetchStart());
+  const token = store.getState().user.token;
+  axios({
+    method: 'DELETE',
+    url: `${process.env.REACT_APP_SERVER_URL}/item/${item._id}`,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    if (response.status === 200) {
+      successMessage(response.data.message, dispatch);
+      dispatch(closeDeleteDialog());
+    }
+  }).catch(err => {
+    console.log(err);
     dispatch(errorMessage(err.response.data));
     if (err.response.status === 401) {
       dispatch(logoutFinally());

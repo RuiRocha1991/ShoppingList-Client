@@ -1,11 +1,10 @@
 import React, {useEffect} from 'react';
 import { makeStyles } from '@material-ui/styles';
 
-import { ItemsToolbar, ItemsTable } from './components';
+import { ItemsToolbar, ItemsTable, DeleteDialog, ItemCreateEdit } from './components';
 import {connect} from "react-redux";
 import {fetchAllItemsByUser} from "../../redux/actions/item.actions";
 import {Box, LinearProgress} from "@material-ui/core";
-import CreateEditItemDialog from "./components/CreateEditItemDialog";
 import SnackbarCustom from "../../components/SnackbarCustom/SnackbarCustom";
 
 const useStyles = makeStyles(theme => ({
@@ -26,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Items = ({onLoadPage, items, isFetching,isItemDialogOpen}) => {
+const Items = ({onLoadPage, items, isFetching,isItemDialogOpen, deleteDialog}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
@@ -40,8 +39,9 @@ const Items = ({onLoadPage, items, isFetching,isItemDialogOpen}) => {
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
-        {isItemDialogOpen && <CreateEditItemDialog />}
-        {!isFetching && <ItemsTable items={items}/>}
+        {isItemDialogOpen && <ItemCreateEdit />}
+        {deleteDialog.isOpen && <DeleteDialog />}
+        {(!isFetching || (isFetching && (isItemDialogOpen || deleteDialog.isOpen))) && <ItemsTable items={items}/>}
       </div>
     </div>
   );
@@ -50,7 +50,8 @@ const Items = ({onLoadPage, items, isFetching,isItemDialogOpen}) => {
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
   items: state.item.items,
-  isItemDialogOpen: state.ui.isItemDialogOpen
+  isItemDialogOpen: state.ui.isItemDialogOpen,
+  deleteDialog: state.ui.deleteDialog
 })
 
 const mapDispatchToProps = (dispatch) => ({

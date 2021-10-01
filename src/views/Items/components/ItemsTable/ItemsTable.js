@@ -17,7 +17,10 @@ import {
   Typography,
   TablePagination, Fab
 } from '@material-ui/core';
-import {openItemsDialog} from "../../../../redux/actions/ui.actions";
+import {
+  openDeleteDialog,
+  openItemsDialog
+} from "../../../../redux/actions/ui.actions";
 import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
@@ -46,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ItemsTable = props => {
-  const { className, items, handleEdit, ...rest } = props;
+  const { className, items, handleEdit, handleDelete, ...rest } = props;
 
   const classes = useStyles();
 
@@ -73,12 +76,11 @@ const ItemsTable = props => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell className={classes.hiddenColumns}>Description</TableCell>
+                  <TableCell>Default Quantity</TableCell>
                   <TableCell className={classes.hiddenColumns}>Unit M</TableCell>
-                  <TableCell className={classes.hiddenColumns}>Default Quantity</TableCell>
                   <TableCell className={classes.hiddenColumns}>Shopping List</TableCell>
                   <TableCell>Category</TableCell>
-                  <TableCell>Action</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -91,9 +93,8 @@ const ItemsTable = props => {
                     <TableCell>
                       <Typography variant="body1">{item.name}</Typography>
                     </TableCell>
-                    <TableCell className={classes.hiddenColumns}>{item.description}</TableCell>
+                    <TableCell>{item.defaultQuantity}</TableCell>
                     <TableCell className={classes.hiddenColumns}>{item.unitMeasurement}</TableCell>
-                    <TableCell className={classes.hiddenColumns}>{item.defaultQuantity}</TableCell>
                     <TableCell className={classes.hiddenColumns}>0</TableCell>
                     <TableCell >{item.category.name}</TableCell>
                     <TableCell style={{ width: 150 }}>
@@ -101,7 +102,7 @@ const ItemsTable = props => {
                         <EditIcon onClick={() => handleEdit(item)}/>
                       </Fab>
                       <Fab aria-label="delete" size="small" className={classes.actions}>
-                        <DeleteIcon/>
+                        <DeleteIcon onClick={() => handleDelete(item)}/>
                       </Fab>
 
                     </TableCell>
@@ -137,8 +138,8 @@ const mapDispatchToProps = (dispatch) => ({
   handleEdit: (item) => {
     dispatch(openItemsDialog(item));
   },
-  handleDelete: (category) => {
-    // dispatch(openDeleteDialog(category));
+  handleDelete: (item) => {
+    dispatch(openDeleteDialog(item));
   },
 })
 

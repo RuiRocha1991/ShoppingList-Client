@@ -60,12 +60,6 @@ const schema = {
       maximum: 25
     },
   },
-  description: {
-    presence: {allowEmpty: true},
-    length: {
-      maximum: 50
-    },
-  },
   defaultQuantity: {
     presence: {allowEmpty: false}
   }
@@ -126,15 +120,13 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
       isValid: false,
       values: {
         name: item ? item.name : '',
-        description: item ? item.description : '',
         category: item ? item.category._id : '',
         unitMeasurement: item ? item.unitMeasurement : '',
         defaultQuantity: item ? item.defaultQuantity : 0
       },
       touched: {},
       remaining: {
-        name: item ? schema.name.length.maximum - item.name.length : schema.name.length.maximum,
-        description: item ? schema.description.length.maximum - item.description.length : schema.description.length.maximum,
+        name: item ? schema.name.length.maximum - item.name.length : schema.name.length.maximum
       },
       errors: {}
   });
@@ -220,21 +212,6 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
                 type="text"
                 value={formState.values.name}
                 inputProps={{ maxLength: schema.name.length.maximum }}
-              />
-              <TextField
-                  className={classes.fields}
-                  error={hasError('description') || formState.remaining.description === 0}
-                  fullWidth
-                  helperText={
-                    hasError('description') ? formState.errors.description[0] : formState.remaining.description + ' characters remaining.'
-                  }
-                  label="Description"
-                  name="description"
-                  onChange={handleChange}
-                  type="text"
-                  value={formState.values.description}
-                  inputProps={{ maxLength: schema.description.length.maximum }}
-
               />
               <FormControl fullWidth className={clsx(classes.formControl, classes.fields)}>
                 <InputLabel id="select-item-category">Category</InputLabel>
