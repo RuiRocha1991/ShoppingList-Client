@@ -15,7 +15,7 @@ import {
   closeItemsDialog
 } from "../../../../redux/actions/ui.actions";
 import {connect} from "react-redux";
-import {createItem} from "../../../../redux/actions/item.actions";
+import {createItem, editItem} from "../../../../redux/actions/item.actions";
 
 
 const styles = (theme) => ({
@@ -67,10 +67,7 @@ const schema = {
     },
   },
   defaultQuantity: {
-    presence: {allowEmpty: false},
-    length: {
-      maximum: 5
-    },
+    presence: {allowEmpty: false}
   }
 };
 
@@ -130,14 +127,14 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
       values: {
         name: item ? item.name : '',
         description: item ? item.description : '',
-        category: item ? item.category : '',
+        category: item ? item.category._id : '',
         unitMeasurement: item ? item.unitMeasurement : '',
         defaultQuantity: item ? item.defaultQuantity : 0
       },
       touched: {},
       remaining: {
         name: item ? schema.name.length.maximum - item.name.length : schema.name.length.maximum,
-        description: item ? schema.description.length.maximum - item.description.length : schema.description.length.maximum
+        description: item ? schema.description.length.maximum - item.description.length : schema.description.length.maximum,
       },
       errors: {}
   });
@@ -177,7 +174,7 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
   };
 
   const calculateRemaining = (target) => {
-    if (target.name !== 'category' && target.name !== 'unitMeasurement') {
+    if (target.name !== 'category' && target.name !== 'unitMeasurement' && target.name !== 'defaultQuantity') {
       return {
         [target.name]: schema[target.name].length.maximum - target.value.length
       }
@@ -269,17 +266,16 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
               </FormControl>
               <TextField
                   className={classes.fields}
-                  error={hasError('defaultQuantity') || formState.remaining.defaultQuantity === 0}
+                  error={hasError('defaultQuantity')}
                   fullWidth
                   helperText={
-                    hasError('defaultQuantity') ? formState.errors.defaultQuantity[0] : formState.remaining.defaultQuantity + ' characters remaining.'
+                    hasError('defaultQuantity') ? formState.errors.defaultQuantity[0] : ''
                   }
                   label="Default Quantity"
                   name="defaultQuantity"
                   onChange={handleChange}
                   type="number"
                   value={formState.values.defaultQuantity}
-                  inputProps={{ maxLength: schema.defaultQuantity.length.maximum }}
 
               />
             </form>
@@ -316,8 +312,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   handleSave: (newFormValues, item) => {
     if (item) {
-      // dispatch(editCategory(newFormValues, category));
-      console.log("EDit");
+       dispatch(editItem(newFormValues, item));
     } else {
       dispatch(createItem(newFormValues));
     }

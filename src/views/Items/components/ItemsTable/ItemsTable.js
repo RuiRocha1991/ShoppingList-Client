@@ -15,8 +15,10 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TablePagination
+  TablePagination, Fab
 } from '@material-ui/core';
+import {openItemsDialog} from "../../../../redux/actions/ui.actions";
+import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -33,18 +35,18 @@ const useStyles = makeStyles(theme => ({
   tableActions: {
     justifyContent: 'flex-end'
   },
-  actions: {
-    marginRight: '16px',
-  },
   hiddenColumns: {
     [theme.breakpoints.down('md')]: {
       display: 'none'
     }
+  },
+  actionEdit: {
+    marginRight: theme.spacing(2)
   }
 }));
 
 const ItemsTable = props => {
-  const { className, items, ...rest } = props;
+  const { className, items, handleEdit, ...rest } = props;
 
   const classes = useStyles();
 
@@ -94,8 +96,14 @@ const ItemsTable = props => {
                     <TableCell className={classes.hiddenColumns}>{item.defaultQuantity}</TableCell>
                     <TableCell className={classes.hiddenColumns}>0</TableCell>
                     <TableCell >{item.category.name}</TableCell>
-                    <TableCell style={{ width: 100 }}>
-                      <EditIcon className={classes.actions}/> <DeleteIcon/>
+                    <TableCell style={{ width: 150 }}>
+                      <Fab aria-label="edit" size="small" className={classes.actionEdit}>
+                        <EditIcon onClick={() => handleEdit(item)}/>
+                      </Fab>
+                      <Fab aria-label="delete" size="small" className={classes.actions}>
+                        <DeleteIcon/>
+                      </Fab>
+
                     </TableCell>
                   </TableRow>
                 ))}
@@ -124,4 +132,14 @@ ItemsTable.propTypes = {
   items: PropTypes.object.isRequired
 };
 
-export default ItemsTable;
+
+const mapDispatchToProps = (dispatch) => ({
+  handleEdit: (item) => {
+    dispatch(openItemsDialog(item));
+  },
+  handleDelete: (category) => {
+    // dispatch(openDeleteDialog(category));
+  },
+})
+
+export default connect(null, mapDispatchToProps)(ItemsTable);

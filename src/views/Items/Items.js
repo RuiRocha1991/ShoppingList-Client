@@ -5,7 +5,6 @@ import { ItemsToolbar, ItemsTable } from './components';
 import {connect} from "react-redux";
 import {fetchAllItemsByUser} from "../../redux/actions/item.actions";
 import {Box, LinearProgress} from "@material-ui/core";
-import {CreateEditCategoryDialog} from "../Categories/components";
 import CreateEditItemDialog from "./components/CreateEditItemDialog";
 import SnackbarCustom from "../../components/SnackbarCustom/SnackbarCustom";
 

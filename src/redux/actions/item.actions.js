@@ -1,5 +1,5 @@
 import {
-  closeDialog, closeItemsDialog,
+  closeItemsDialog,
   errorMessage,
   fetchStart,
   fetchStop,
@@ -9,7 +9,6 @@ import store from "../store";
 import axios from "axios";
 import {logoutFinally} from "./user.actions";
 import {ITEM_FETCH_ALL} from "../../Constants";
-import {fetchAllCategories} from "./category.actions";
 
 export const fetchAllItemsByUser =  () => (dispatch) => {
   dispatch(fetchStart());
