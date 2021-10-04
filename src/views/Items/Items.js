@@ -61,7 +61,7 @@ const Items = ({onLoadPage, categories, isFetching, deleteDialog, categoryDialog
         {categoryDialog.isOpen && <CreateEditCategoryDialog />}
         {itemDialog.isOpen && <CreateEditItemDialog />}
         {deleteDialog.isOpen && <DeleteDialog />}
-        <ItemTable categories={categories} />
+        {(!isFetching || (isFetching && (categoryDialog.isOpen || itemDialog.isOpen || deleteDialog.isOpen))) && <ItemTable categories={categories} />}
       </div>
     </div>
   );
