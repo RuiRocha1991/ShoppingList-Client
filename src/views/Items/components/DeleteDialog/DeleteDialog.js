@@ -8,7 +8,9 @@ import {
 } from "@material-ui/core";
 import {
   closeDeleteDialog,
-} from "../../../../redux/actions/ui.actions";
+  deleteCategory
+} from "../../../../redux/actions/category.actions";
+
 import {connect} from "react-redux";
 import {makeStyles} from "@material-ui/styles";
 import {deleteItem} from "../../../../redux/actions/item.actions";
@@ -19,28 +21,34 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DeleteDialog = ({deleteDialog, handleClose, handleDelete, category, isFetching}) => {
+const DeleteDialog = ({dialog, handleClose, handleDelete, isFetching}) => {
   const classes = useStyles();
   return ( <Dialog
-      open={deleteDialog.isOpen}
+      open={dialog.isOpen}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
   >
-    <DialogTitle id="alert-dialog-title">{"Delete Item"}</DialogTitle>
+    <DialogTitle id="alert-dialog-title">{"Delete Category"}</DialogTitle>
     <DialogContent>
-      <DialogContentText id="alert-dialog-description">
-        Are you sure you want to delete this Item?
+      {!dialog.item && <DialogContentText id="alert-dialog-description">
+        Are you sure you want to delete this category?
         <Typography variant={'h3'}>
-          {category.name}
+          {dialog.category.name}
         </Typography>
-      </DialogContentText>
+      </DialogContentText>}
+      {dialog.item && <DialogContentText id="alert-dialog-description">
+        Are you sure you want to delete this item?
+        <Typography variant={'h3'}>
+          {dialog.item.name}
+        </Typography>
+      </DialogContentText>}
     </DialogContent>
     <DialogActions>
       <Button onClick={handleClose} color="primary">
         Cancel
       </Button>
-      <Button onClick={() => handleDelete(category)} color="primary" autoFocus>
+      <Button onClick={() => handleDelete(dialog.category, dialog.item)} color="primary" autoFocus>
         {isFetching && <CircularProgress size={20} color='inherit' className={classes.progress} />} Delete
       </Button>
     </DialogActions>
@@ -49,14 +57,18 @@ const DeleteDialog = ({deleteDialog, handleClose, handleDelete, category, isFetc
 
 
 const mapStateToProps = (state) => ({
-  deleteDialog: state.ui.deleteDialog,
+  dialog: state.category.dialogToDelete,
   isFetching: state.ui.isFetching,
-  category: state.ui.deleteDialog.category
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleDelete: (item) => {
-      dispatch(deleteItem(item));
+  handleDelete: (category, item) => {
+    if(item) {
+      dispatch(deleteItem(category, item))
+    } else {
+      dispatch(deleteCategory(category));
+    }
+
   },
   handleClose: () => {
     dispatch(closeDeleteDialog());

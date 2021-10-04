@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/styles';
 import { Divider, Drawer } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import CategoryIcon from '@material-ui/icons/Category';
 import KitchenIcon from '@material-ui/icons/Kitchen';
 
 import { Profile, SidebarNav } from './components';
@@ -48,11 +47,6 @@ const Sidebar = props => {
       title: 'Item',
       href: '/items',
       icon: <KitchenIcon />
-    },
-    {
-      title: 'Category',
-      href: '/categories',
-      icon: <CategoryIcon />
     }
   ];
 

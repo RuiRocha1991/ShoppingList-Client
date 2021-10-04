@@ -12,9 +12,9 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import {
   createCategory,
-  editCategory
+  editCategory,
+  closeCreateEditCategoryDialog
 } from "../../../../redux/actions/category.actions";
-import {closeDialog} from "../../../../redux/actions/ui.actions";
 import {connect} from "react-redux";
 
 
@@ -116,6 +116,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CreateEditCategoryDialog = ({dialogConfig, category, handleClose, handleSave, isFetching}) => {
+
   const [formState, setFormState] = useState( {
       isValid: false,
       values: {
@@ -244,9 +245,9 @@ const CreateEditCategoryDialog = ({dialogConfig, category, handleClose, handleSa
 }
 
 const mapStateToProps = (state) => ({
-  dialogConfig: state.ui.dialog,
   isFetching: state.ui.isFetching,
-  category: state.ui.dialog.objectToEdit
+  dialogConfig: state.category.dialogToCreateEditCategory,
+  category: state.category.dialogToCreateEditCategory.category
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -259,7 +260,7 @@ const mapDispatchToProps = (dispatch) => ({
 
   },
   handleClose: () => {
-    dispatch(closeDialog());
+    dispatch(closeCreateEditCategoryDialog());
   },
 })
 

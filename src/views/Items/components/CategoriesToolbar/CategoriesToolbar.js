@@ -4,10 +4,10 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
-import {
-  openItemsDialog
-} from "../../../../redux/actions/ui.actions";
 import {connect} from "react-redux";
+import SnackbarCustom
+  from "../../../../components/SnackbarCustom/SnackbarCustom";
+import {openDialogToCreateCategory} from "../../../../redux/actions/category.actions";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -21,11 +21,11 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   searchInput: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   }
 }));
 
-const ItemsToolbar = props => {
+const CategoriesToolbar = props => {
   const { className, handleOpenDialog, ...rest } = props;
 
   const classes = useStyles();
@@ -35,6 +35,7 @@ const ItemsToolbar = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
+      <SnackbarCustom />
       <div className={classes.row}>
         <span className={classes.spacer} />
         <Button
@@ -42,21 +43,21 @@ const ItemsToolbar = props => {
           variant="contained"
           onClick={handleOpenDialog}
         >
-          Add Item
+          Add category
         </Button>
       </div>
     </div>
   );
 };
 
-ItemsToolbar.propTypes = {
+CategoriesToolbar.propTypes = {
   className: PropTypes.string
 };
 
 const mapDispatchToProps = (dispatch) => ({
   handleOpenDialog: () => {
-    dispatch(openItemsDialog(undefined));
+    dispatch(openDialogToCreateCategory());
   }
 });
 
-export default connect(null, mapDispatchToProps)(ItemsToolbar)
+export default connect(null, mapDispatchToProps)(CategoriesToolbar)

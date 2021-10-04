@@ -10,7 +10,6 @@ import {
   SignIn as SignInView,
   SignOut as SignOutView,
   Tests as TestsView,
-  Categories as CategoriesView,
   Items as ItemsView
 } from './views';
 
@@ -49,13 +48,6 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/items"
-      />
-      <RouteWithLayout
-          isProtected={true}
-          component={CategoriesView}
-          exact
-          layout={MainLayout}
-          path="/categories"
       />
       <RouteWithLayout
           isProtected={true}

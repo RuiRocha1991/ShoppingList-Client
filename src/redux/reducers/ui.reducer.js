@@ -15,16 +15,7 @@ const initialState = {
     type: 'error',
     message: '',
     isOpen: false
-  },
-  dialog: {
-    isOpen: false,
-    objectToEdit: undefined
-  },
-  deleteDialog: {
-    isOpen: false,
-    category: undefined
-  },
-  isItemDialogOpen: false
+  }
 }
 
 export default (state = initialState, action) => {
@@ -89,7 +80,8 @@ export default (state = initialState, action) => {
           ...state,
           deleteDialog: {
             isOpen: true,
-            category: action.payload
+            category: action.payload.category,
+            item:action.payload.item
           }
       }
       case UI_CLOSE_DELETE_DIALOG:

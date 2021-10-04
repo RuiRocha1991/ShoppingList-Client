@@ -2,11 +2,19 @@ import {
   fetchStart,
   fetchStop,
   errorMessage,
-  closeDialog,
-  showSuccessMessage, closeDeleteDialog
+  showSuccessMessage
 } from "./ui.actions";
 import axios from "axios";
-import {CATEGORY_FETCH_ALL} from '../../Constants';
+import {
+  CATEGORY_ADD_ITEM,
+  CATEGORY_CLOSE_CREATE_EDIT_DIALOG,
+  CATEGORY_CLOSE_CREATE_EDIT_ITEM_DIALOG,
+  CATEGORY_CLOSE_DELETE_DIALOG, CATEGORY_CREATE,
+  CATEGORY_DELETE,
+  CATEGORY_DELETE_ITEM,
+  CATEGORY_EDIT, CATEGORY_EDIT_ITEM,
+  CATEGORY_FETCH_ALL
+} from '../../Constants';
 import store from "../store";
 import {logoutFinally} from "./user.actions";
 
@@ -22,7 +30,7 @@ export const createCategory =  (category) => (dispatch) => {
   }).then(response => {
     if (response.status === 201) {
       dispatch(fetchStop());
-      dispatch(closeDialog());
+      dispatch(closeCreateEditCategoryDialog());
       dispatch(showSuccessMessage({message: response.data.message}))
       dispatch(fetchAllCategories());
     }
@@ -45,7 +53,7 @@ export const editCategory =  (newFormValues, category) => (dispatch) => {
   }).then(response => {
     if (response.status === 200) {
       dispatch(fetchStop());
-      dispatch(closeDialog());
+      dispatch(closeCreateEditCategoryDialog());
       dispatch(showSuccessMessage({message: response.data.message}))
       dispatch(fetchAllCategories());
     }
@@ -103,5 +111,46 @@ export const deleteCategory = (category) => (dispatch) => {
 
 export const fecthAllCategoriesSuccess = (data) => ({
   type: CATEGORY_FETCH_ALL,
+  payload: data
+});
+
+export const openDeleteCategoryDialod = (data) => ({
+  type: CATEGORY_DELETE,
+  payload: data
+})
+
+export const openDeleteItemDialod = (data) => ({
+  type: CATEGORY_DELETE_ITEM,
+  payload: data
+})
+
+export const closeDeleteDialog = () => ({
+  type: CATEGORY_CLOSE_DELETE_DIALOG
+})
+
+export const closeCreateEditCategoryDialog = () => ({
+  type: CATEGORY_CLOSE_CREATE_EDIT_DIALOG
+})
+
+export const closeCreateEditItemDialog = () => ({
+  type: CATEGORY_CLOSE_CREATE_EDIT_ITEM_DIALOG
+})
+
+export const openDialogToEditCategory = (data) => ({
+  type: CATEGORY_EDIT,
+  payload: data
+});
+
+export const openDialogToCreateItem = (data) => ({
+  type: CATEGORY_ADD_ITEM,
+  payload: data
+});
+
+export const openDialogToCreateCategory = () => ({
+  type: CATEGORY_CREATE,
+});
+
+export const openDialogToEditItem = (data) => ({
+  type: CATEGORY_EDIT_ITEM,
   payload: data
 });

@@ -1,18 +1,22 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-
-import { ItemsToolbar, ItemsTable, DeleteDialog, ItemCreateEdit } from './components';
-import {connect} from "react-redux";
-import {fetchAllItemsByUser} from "../../redux/actions/item.actions";
-import {Box, LinearProgress} from "@material-ui/core";
-import SnackbarCustom from "../../components/SnackbarCustom/SnackbarCustom";
+import {
+  Grid,
+  LinearProgress,
+  Box,
+} from '@material-ui/core';
+import {
+  CategoriesToolbar,
+  CategoryCard,
+  CreateEditCategoryDialog, CreateEditItemDialog,
+  DeleteDialog
+} from './components';
+import { connect } from 'react-redux';
+import { fetchAllCategories } from '../../redux/actions/category.actions';
 
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
-  },
-  content: {
-    marginTop: theme.spacing(2)
   },
   processContent: {
     height: 50,
@@ -23,25 +27,51 @@ const useStyles = makeStyles(theme => ({
   progress: {
     margin: '0 16px'
   },
+  content: {
+    marginTop: theme.spacing(2)
+  },
+  pagination: {
+    marginTop: theme.spacing(3),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  }
 }));
 
-const Items = ({onLoadPage, items, isFetching,isItemDialogOpen, deleteDialog}) => {
+const Items = ({onLoadPage, categories, isFetching, deleteDialog, categoryDialog, itemDialog}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
-  },[]);
+  }, []);
+
   return (
     <div className={classes.root}>
-      <ItemsToolbar />
-      <SnackbarCustom />
+     <CategoriesToolbar/>
       <div className={classes.content}>
-        {isFetching &&
+        {!deleteDialog.isOpen && !categoryDialog.isOpen && !itemDialog.isOpen && isFetching &&
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
-        {isItemDialogOpen && <ItemCreateEdit />}
+        {categoryDialog.isOpen && <CreateEditCategoryDialog />}
+        {itemDialog.isOpen && <CreateEditItemDialog />}
         {deleteDialog.isOpen && <DeleteDialog />}
-        {(!isFetching || (isFetching && (isItemDialogOpen || deleteDialog.isOpen))) && <ItemsTable items={items}/>}
+          <Grid
+              container
+              spacing={3}
+          >
+            {(!isFetching || (isFetching && (categoryDialog.isOpen || deleteDialog.isOpen || itemDialog.isOpen))) && categories.map(category => (
+                <Grid
+                    item
+                    key={category._id}
+                    lg={3}
+                    md={4}
+                    sm={6}
+                    xs={12}
+                >
+                  <CategoryCard category={category} />
+                </Grid>
+            ))}
+          </Grid>
       </div>
     </div>
   );
@@ -49,15 +79,17 @@ const Items = ({onLoadPage, items, isFetching,isItemDialogOpen, deleteDialog}) =
 
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
-  items: state.item.items,
-  isItemDialogOpen: state.ui.isItemDialogOpen,
-  deleteDialog: state.ui.deleteDialog
+  categories: state.category.categories,
+  categoryDialog: state.category.dialogToCreateEditCategory,
+  itemDialog: state.category.dialogToCreateEditItem,
+  deleteDialog: state.category.dialogToDelete
 })
 
 const mapDispatchToProps = (dispatch) => ({
   onLoadPage: () => {
-    dispatch(fetchAllItemsByUser());
+    dispatch(fetchAllCategories());
   },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Items);
+

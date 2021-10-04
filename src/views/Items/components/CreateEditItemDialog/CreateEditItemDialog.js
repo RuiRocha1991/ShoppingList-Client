@@ -11,11 +11,9 @@ import {
   withStyles
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import {
-  closeItemsDialog
-} from "../../../../redux/actions/ui.actions";
 import {connect} from "react-redux";
 import {createItem, editItem} from "../../../../redux/actions/item.actions";
+import {closeCreateEditItemDialog} from "../../../../redux/actions/category.actions";
 
 
 const styles = (theme) => ({
@@ -115,12 +113,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, isFetching, currentCategories}) => {
+const CreateEditItemDialog = ({dialog, item, handleClose, handleSave, isFetching, category}) => {
   const [formState, setFormState] = useState( {
       isValid: false,
       values: {
         name: item ? item.name : '',
-        category: item ? item.category._id : '',
         unitMeasurement: item ? item.unitMeasurement : '',
         defaultQuantity: item ? item.defaultQuantity : 0
       },
@@ -185,13 +182,13 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
             handleClose();
           }
         }}
-        open={isItemDialogOpen}
+        open={dialog.isOpen}
       >
         <DialogTitleCustom
           id="customized-dialog-title"
           onClose={handleClose}
         >
-          {item ? 'Edit Item' : 'New Item'}
+          {item ? 'Edit Item' : `New Item on ${category.name}`}
         </DialogTitleCustom>
         <DialogContentCustom dividers>
           <div className={classes.contentBody}>
@@ -213,18 +210,6 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
                 value={formState.values.name}
                 inputProps={{ maxLength: schema.name.length.maximum }}
               />
-              <FormControl fullWidth className={clsx(classes.formControl, classes.fields)}>
-                <InputLabel id="select-item-category">Category</InputLabel>
-                <Select
-                    name="category"
-                    labelId="select-item-category"
-                    id="select-item-category"
-                    value={formState.values.category}
-                    onChange={handleChange}
-                >
-                  {currentCategories.map(category => <MenuItem value={category._id}>{category.name}</MenuItem>)}
-                </Select>
-              </FormControl>
               <FormControl fullWidth className={clsx(classes.formControl, classes.fields)}>
                 <InputLabel id="select-item-unitMeasurement">Unidade de Medida</InputLabel>
                 <Select
@@ -263,13 +248,12 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
           {isFetching && <CircularProgress size={20} color='inherit' className={classes.progress} />}
           <Button
             disabled={ formState.values.name.length === 0
-            || formState.values.category.length === 0
             || formState.values.unitMeasurement.length === 0
             || formState.values.defaultQuantity.length === 0
             || isFetching}
             autoFocus
             color="primary"
-            onClick={() => handleSave(formState.values, item)}
+            onClick={() => handleSave(formState.values, category, item)}
           >
             Save changes
           </Button>
@@ -280,23 +264,23 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
 }
 
 const mapStateToProps = (state) => ({
-  isItemDialogOpen: state.ui.isItemDialogOpen,
   isFetching: state.ui.isFetching,
-  item: state.item.selectedItem,
-  currentCategories: state.item.currentCategories
+  dialog: state.category.dialogToCreateEditItem,
+  category: state.category.dialogToCreateEditItem.category,
+  item: state.category.dialogToCreateEditItem.item,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleSave: (newFormValues, item) => {
+  handleSave: (newFormValues, category, item) => {
     if (item) {
-       dispatch(editItem(newFormValues, item));
+       dispatch(editItem(newFormValues, item, category));
     } else {
-      dispatch(createItem(newFormValues));
+      dispatch(createItem(newFormValues, category));
     }
 
   },
   handleClose: () => {
-    dispatch(closeItemsDialog());
+    dispatch(closeCreateEditItemDialog());
   },
 })
 

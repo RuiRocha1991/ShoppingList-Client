@@ -1,6 +1,4 @@
 import {
-  closeDeleteDialog,
-  closeItemsDialog,
   errorMessage,
   fetchStart,
   fetchStop,
@@ -12,6 +10,11 @@ import {logoutFinally} from "./user.actions";
 import {
   ITEM_FETCH_ALL
 } from "../../Constants";
+import {
+  closeCreateEditItemDialog,
+  closeDeleteDialog,
+  fetchAllCategories
+} from "./category.actions";
 
 
 export const fetchAllItemsByUser =  (page = 0) => (dispatch) => {
@@ -35,12 +38,12 @@ export const fetchAllItemsByUser =  (page = 0) => (dispatch) => {
   });
 }
 
-export const createItem =  (item) => (dispatch) => {
+export const createItem =  (item, category) => (dispatch) => {
   dispatch(fetchStart());
   const token = store.getState().user.token;
   axios({
     method: 'POST',
-    url: `${process.env.REACT_APP_SERVER_URL}/item/`,
+    url: `${process.env.REACT_APP_SERVER_URL}/item/${category._id}`,
     data: item,
     headers: { token },
     withCredentials: true
@@ -55,12 +58,12 @@ export const createItem =  (item) => (dispatch) => {
     }
   });
 }
-export const editItem =  (newFormValues, item) => (dispatch) => {
+export const editItem =  (newFormValues, item, category) => (dispatch) => {
   dispatch(fetchStart());
   const token = store.getState().user.token;
   axios({
     method: 'PUT',
-    url: `${process.env.REACT_APP_SERVER_URL}/item/${item._id}`,
+    url: `${process.env.REACT_APP_SERVER_URL}/item/${category._id}/${item._id}`,
     data: newFormValues,
     headers: { token },
     withCredentials: true
@@ -76,12 +79,12 @@ export const editItem =  (newFormValues, item) => (dispatch) => {
   });
 }
 
-export const deleteItem = (item) => (dispatch) => {
+export const deleteItem = (category, item) => (dispatch) => {
   dispatch(fetchStart());
   const token = store.getState().user.token;
   axios({
     method: 'DELETE',
-    url: `${process.env.REACT_APP_SERVER_URL}/item/${item._id}`,
+    url: `${process.env.REACT_APP_SERVER_URL}/item/${category._id}/${item._id}`,
     headers: { token },
     withCredentials: true
   }).then(response => {
@@ -100,9 +103,9 @@ export const deleteItem = (item) => (dispatch) => {
 
 const successMessage = (message, dispatch) => {
   dispatch(fetchStop());
-  dispatch(closeItemsDialog());
+  dispatch(closeCreateEditItemDialog());
   dispatch(showSuccessMessage({message}))
-  dispatch(fetchAllItemsByUser());
+  dispatch(fetchAllCategories());
 }
 
 export const fecthAllItemsByUserSuccess = (data) => ({

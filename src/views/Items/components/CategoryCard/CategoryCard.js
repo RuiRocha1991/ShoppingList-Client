@@ -20,15 +20,17 @@ import {
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import ViewListIcon from '@material-ui/icons/ViewList';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getInitials} from "../../../../helpers";
 import moment from "moment";
 import {connect} from "react-redux";
 import {
-  openDeleteDialog,
-  openDialog
-} from "../../../../redux/actions/ui.actions";
-import { CustomVerticalActions } from "../../../../components";
+  openDeleteCategoryDialod,
+  openDeleteItemDialod,
+  openDialogToCreateItem,
+  openDialogToEditCategory,
+  openDialogToEditItem
+} from "../../../../redux/actions/category.actions";
+import {CustomVerticalActions} from "../";
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -69,10 +71,9 @@ const calculateLastUpdateTime = (lastUpdate) => {
 }
 
 const CategoryCard = props => {
-  const { className, category, handleEdit, handleDelete, ...rest } = props;
+  const { className, category, handleEdit, handleDelete, handleCreateItemDialog,handleDeleteItem, handleEditItem, ...rest } = props;
 
   const classes = useStyles();
-  const items = [];
   return (
     <Card
       {...rest}
@@ -86,7 +87,7 @@ const CategoryCard = props => {
             </Avatar>
           }
           action={
-            <CustomVerticalActions object={category} handleDelete={handleDelete} handleEdit={handleEdit} />
+            <CustomVerticalActions category={category} handleDelete={handleDelete} handleEdit={handleEdit} handleCreateItemDialog={handleCreateItemDialog}/>
           }
           title={category.name}
           subheader={category.description}
@@ -95,9 +96,9 @@ const CategoryCard = props => {
 
         <Paper style={{maxHeight: 300, overflow: 'auto'}}>
           <List>
-            {items.map((item, i) => (
+            {category.items.map((item, i) => (
                 <ListItem
-                    divider={i < item.length - 1}
+                    divider={i < category.items.length - 1}
                     key={item._id}
                 >
                   <ListItemText
@@ -107,7 +108,7 @@ const CategoryCard = props => {
                       edge="end"
                       size="small"
                   >
-                    <MoreVertIcon />
+                    <CustomVerticalActions category={category} handleDelete={handleDeleteItem} handleEdit={handleEditItem} item={item}/>
                   </IconButton>
                 </ListItem>
             ))}
@@ -157,11 +158,20 @@ CategoryCard.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   handleEdit: (category) => {
-    dispatch(openDialog(category));
+    dispatch(openDialogToEditCategory({category}));
   },
   handleDelete: (category) => {
-    dispatch(openDeleteDialog(category));
+    dispatch(openDeleteCategoryDialod({category}));
   },
+  handleCreateItemDialog: (category) => {
+    dispatch(openDialogToCreateItem({category}));
+  },
+  handleEditItem: (category, item) => {
+    dispatch(openDialogToEditItem({category, item}));
+  },
+  handleDeleteItem: (category, item) => {
+    dispatch(openDeleteItemDialod({category, item}))
+  }
 })
 
 export default connect(null, mapDispatchToProps)(CategoryCard);
