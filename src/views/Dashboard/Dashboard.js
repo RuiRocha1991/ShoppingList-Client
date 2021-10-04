@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const TestsView = ({state}) => {
+const Dashboard = ({state}) => {
   const classes = useStyles();
 
   return (
@@ -67,4 +67,4 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(TestsView);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

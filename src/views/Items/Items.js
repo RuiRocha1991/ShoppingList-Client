@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
-  Grid,
   LinearProgress,
   Box,
 } from '@material-ui/core';
 import {
   CategoriesToolbar,
-  CategoryCard,
   CreateEditCategoryDialog, CreateEditItemDialog,
-  DeleteDialog
+  DeleteDialog, ItemTable
 } from './components';
+
 import { connect } from 'react-redux';
 import { fetchAllCategories } from '../../redux/actions/category.actions';
 
@@ -35,8 +34,15 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end'
-  }
+  },
+  hiddenColumns: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'none'
+    }
+  },
 }));
+
+
 
 const Items = ({onLoadPage, categories, isFetching, deleteDialog, categoryDialog, itemDialog}) => {
   const classes = useStyles();
@@ -55,23 +61,7 @@ const Items = ({onLoadPage, categories, isFetching, deleteDialog, categoryDialog
         {categoryDialog.isOpen && <CreateEditCategoryDialog />}
         {itemDialog.isOpen && <CreateEditItemDialog />}
         {deleteDialog.isOpen && <DeleteDialog />}
-          <Grid
-              container
-              spacing={3}
-          >
-            {(!isFetching || (isFetching && (categoryDialog.isOpen || deleteDialog.isOpen || itemDialog.isOpen))) && categories.map(category => (
-                <Grid
-                    item
-                    key={category._id}
-                    lg={3}
-                    md={4}
-                    sm={6}
-                    xs={12}
-                >
-                  <CategoryCard category={category} />
-                </Grid>
-            ))}
-          </Grid>
+        <ItemTable categories={categories} />
       </div>
     </div>
   );

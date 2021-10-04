@@ -7,36 +7,13 @@ import {
 import store from "../store";
 import axios from "axios";
 import {logoutFinally} from "./user.actions";
-import {
-  ITEM_FETCH_ALL
-} from "../../Constants";
+
 import {
   closeCreateEditItemDialog,
   closeDeleteDialog,
   fetchAllCategories
 } from "./category.actions";
 
-
-export const fetchAllItemsByUser =  (page = 0) => (dispatch) => {
-  dispatch(fetchStart());
-  const token = store.getState().user.token;
-  axios({
-    method: 'GET',
-    url: `${process.env.REACT_APP_SERVER_URL}/item/${page}/${store.getState().item.items.rowsPerPage}`,
-    headers: { token },
-    withCredentials: true
-  }).then(response => {
-    if (response.status === 200) {
-      dispatch(fecthAllItemsByUserSuccess({items: response.data.items, categories: response.data.categories}));
-      dispatch(fetchStop());
-    }
-  }).catch(err => {
-    dispatch(errorMessage(err));
-    if (err.response.status === 401) {
-      dispatch(logoutFinally());
-    }
-  });
-}
 
 export const createItem =  (item, category) => (dispatch) => {
   dispatch(fetchStart());
@@ -49,7 +26,7 @@ export const createItem =  (item, category) => (dispatch) => {
     withCredentials: true
   }).then(response => {
     if (response.status === 201) {
-      successMessage(response.data.message, dispatch);
+      successMessage(response.data.message, dispatch, 'added');
     }
   }).catch(err => {
     dispatch(errorMessage(err.response.data));
@@ -101,14 +78,11 @@ export const deleteItem = (category, item) => (dispatch) => {
   });
 }
 
-const successMessage = (message, dispatch) => {
+const successMessage = (message, dispatch, added) => {
   dispatch(fetchStop());
-  dispatch(closeCreateEditItemDialog());
+  if (!store.getState().ui.keepDialogOpen || !added) {
+    dispatch(closeCreateEditItemDialog());
+  }
   dispatch(showSuccessMessage({message}))
   dispatch(fetchAllCategories());
 }
-
-export const fecthAllItemsByUserSuccess = (data) => ({
-  type: ITEM_FETCH_ALL,
-  payload: data
-})

@@ -1,12 +1,10 @@
 import {
-  ITEM_CHANGE_ROWS_PER_PAGE_ON_TABLE,
   UI_CLOSE_INFO,
   UI_FETCHING_FALSE,
-  UI_FETCHING_TRUE,
+  UI_FETCHING_TRUE, UI_KEEP_DIALOG_OPEN,
   UI_SHOW_INFO_ERROR,
   UI_SHOW_INFO_SUCCESS,
 } from "../../Constants";
-import {fetchAllItemsByUser} from "./item.actions";
 
 export const fetchStart = () => ({
   type: UI_FETCHING_TRUE
@@ -35,14 +33,7 @@ export const errorMessage = (err) => (dispatch) => {
   console.error(err);
 };
 
-export const changePageOnItemsTable = (page) => (dispatch) => {
-  dispatch(fetchAllItemsByUser(page));
-}
 
-export const changeRowsPerPageOnItemsTable = (rowsPerPage) => (dispatch) => {
-  dispatch({
-    type: ITEM_CHANGE_ROWS_PER_PAGE_ON_TABLE,
-    payload: rowsPerPage
-  });
-  dispatch(fetchAllItemsByUser(0));
-}
+export const handleChangeCheckbox = () => ({
+    type: UI_KEEP_DIALOG_OPEN,
+});

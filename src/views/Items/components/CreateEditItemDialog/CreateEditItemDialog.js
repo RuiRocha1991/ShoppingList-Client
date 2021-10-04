@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react';
 import validate from 'validate.js';
 import clsx from 'clsx';
 import {
-  Button, CircularProgress, Dialog,
+  Button, Checkbox, CircularProgress, Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle, FormControl,
+  DialogTitle, FormControl, FormControlLabel,
   IconButton, InputLabel, makeStyles, MenuItem, Select, TextField,
   Typography, useMediaQuery, useTheme,
   withStyles
@@ -14,6 +14,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import {connect} from "react-redux";
 import {createItem, editItem} from "../../../../redux/actions/item.actions";
 import {closeCreateEditItemDialog} from "../../../../redux/actions/category.actions";
+import {handleChangeCheckbox} from "../../../../redux/actions/ui.actions";
 
 
 const styles = (theme) => ({
@@ -113,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateEditItemDialog = ({dialog, item, handleClose, handleSave, isFetching, category}) => {
+const CreateEditItemDialog = ({dialog, item, handleClose, handleSave, isFetching, category, handleChangeCheckbox, keepDialogOpen}) => {
   const [formState, setFormState] = useState( {
       isValid: false,
       values: {
@@ -245,6 +246,10 @@ const CreateEditItemDialog = ({dialog, item, handleClose, handleSave, isFetching
 
         </DialogContentCustom>
         <DialogActionsCustom>
+          {!item && <FormControlLabel
+              control={<Checkbox  name="AddOther" checked={keepDialogOpen} onChange={handleChangeCheckbox}/>}
+              label="Keep open to add other Item"
+          />}
           {isFetching && <CircularProgress size={20} color='inherit' className={classes.progress} />}
           <Button
             disabled={ formState.values.name.length === 0
@@ -268,6 +273,7 @@ const mapStateToProps = (state) => ({
   dialog: state.category.dialogToCreateEditItem,
   category: state.category.dialogToCreateEditItem.category,
   item: state.category.dialogToCreateEditItem.item,
+  keepDialogOpen: state.ui.keepDialogOpen
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -282,6 +288,9 @@ const mapDispatchToProps = (dispatch) => ({
   handleClose: () => {
     dispatch(closeCreateEditItemDialog());
   },
+  handleChangeCheckbox: () => {
+    dispatch(handleChangeCheckbox())
+  }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateEditItemDialog)
