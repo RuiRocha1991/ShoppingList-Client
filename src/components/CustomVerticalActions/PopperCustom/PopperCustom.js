@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PopperCustom = ({handleClose, isOpen, anchorEl, handleEdit, category, handleDelete}) => {
+const PopperCustom = ({handleClose, isOpen, anchorEl, handleEdit, object, handleDelete}) => {
   const classes = useStyles();
   return (
       <Menu
@@ -24,11 +24,11 @@ const PopperCustom = ({handleClose, isOpen, anchorEl, handleEdit, category, hand
           onClose={handleClose}
       >
         <MenuItem onClick={() => {
-          handleEdit(category);
+          handleEdit(object);
           handleClose();
         }}><EditIcon  className={classes.icon} /> Edit</MenuItem>
         <MenuItem onClick={() => {
-          handleDelete(category);
+          handleDelete(object);
           handleClose();
         }}><DeleteIcon className={classes.icon} /> Delete</MenuItem>
       </Menu>

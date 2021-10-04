@@ -9,15 +9,17 @@ import {
 import store from "../store";
 import axios from "axios";
 import {logoutFinally} from "./user.actions";
-import {ITEM_FETCH_ALL} from "../../Constants";
-import {fetchAllCategories} from "./category.actions";
+import {
+  ITEM_FETCH_ALL
+} from "../../Constants";
 
-export const fetchAllItemsByUser =  () => (dispatch) => {
+
+export const fetchAllItemsByUser =  (page = 0) => (dispatch) => {
   dispatch(fetchStart());
   const token = store.getState().user.token;
   axios({
     method: 'GET',
-    url: `${process.env.REACT_APP_SERVER_URL}/item/`,
+    url: `${process.env.REACT_APP_SERVER_URL}/item/${page}/${store.getState().item.items.rowsPerPage}`,
     headers: { token },
     withCredentials: true
   }).then(response => {

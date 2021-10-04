@@ -6,7 +6,6 @@ import {
   DialogContentText,
   DialogTitle, Typography
 } from "@material-ui/core";
-import {deleteCategory,} from "../../../../redux/actions/category.actions";
 import {
   closeDeleteDialog,
 } from "../../../../redux/actions/ui.actions";

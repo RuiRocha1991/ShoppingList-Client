@@ -235,7 +235,7 @@ const CreateEditItemDialog = ({isItemDialogOpen, item, handleClose, handleSave, 
                     onChange={handleChange}
                 >
                   <MenuItem value="gramas">Gramas</MenuItem>
-                  <MenuItem value="Kilogramas">Kilogramas</MenuItem>
+                  <MenuItem value="kilogramas">Kilogramas</MenuItem>
                   <MenuItem value="litros">Litros</MenuItem>
                   <MenuItem value="unidades">Unidades</MenuItem>
                   <MenuItem value="metros">Metros</MenuItem>

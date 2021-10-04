@@ -1,11 +1,15 @@
 import {
+  ITEM_CHANGE_PAGE_ON_TABLE,
+  ITEM_CHANGE_ROWS_PER_PAGE_ON_TABLE,
   ITEM_CLOSE_DIALOG,
-  ITEM_FETCH_ALL, ITEM_OPEN_DIALOG,
+  ITEM_FETCH_ALL,
+  ITEM_OPEN_DIALOG,
 } from '../../Constants';
 
 const initialState = {
   selectedItem: undefined,
   items: {
+    rowsPerPage: 10,
     totalItems: 0,
     items: [],
     totalPages: 0,
@@ -21,7 +25,10 @@ export default (state = initialState, action) => {
         ...state,
         items: {
           ...state.items,
-          items: action.payload.items,
+          totalItems: action.payload.items.totalDocs,
+          totalPages: action.payload.items.totalPages,
+          currentPage: action.payload.items.page - 1,
+          items: action.payload.items.docs,
         },
         currentCategories: action.payload.categories,
       }
@@ -35,6 +42,22 @@ export default (state = initialState, action) => {
         ...state,
         selectedItem: undefined,
       }
+    case ITEM_CHANGE_PAGE_ON_TABLE:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          currentPage: action.payload
+        }
+      }
+    case ITEM_CHANGE_ROWS_PER_PAGE_ON_TABLE:
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          rowsPerPage: action.payload
+        }
+    }
     default:
       return state
   }

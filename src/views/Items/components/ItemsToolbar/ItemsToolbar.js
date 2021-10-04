@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Button } from '@material-ui/core';
 
-import { SearchInput } from 'components';
 import {
   openItemsDialog
 } from "../../../../redux/actions/ui.actions";
@@ -37,10 +36,6 @@ const ItemsToolbar = props => {
       className={clsx(classes.root, className)}
     >
       <div className={classes.row}>
-        <SearchInput
-            className={classes.searchInput}
-            placeholder="Search user"
-        />
         <span className={classes.spacer} />
         <Button
           color="primary"

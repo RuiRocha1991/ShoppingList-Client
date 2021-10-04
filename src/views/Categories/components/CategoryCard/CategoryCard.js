@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
@@ -28,7 +28,7 @@ import {
   openDeleteDialog,
   openDialog
 } from "../../../../redux/actions/ui.actions";
-import PopperCustom from "../../../../components/PopperCustom";
+import { CustomVerticalActions } from "../../../../components";
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -70,26 +70,6 @@ const calculateLastUpdateTime = (lastUpdate) => {
 
 const CategoryCard = props => {
   const { className, category, handleEdit, handleDelete, ...rest } = props;
-  const [state, setState] = useState({
-    anchorEl: null,
-    isOpen: false
-  });
-
-  const handleOpen = (event) => {
-    setState((state) => ({
-      ...state,
-      isOpen: !state.isOpen,
-      anchorEl: event.currentTarget
-    }));
-  };
-
-  const handleClose = () => {
-    setState((state) => ({
-      ...state,
-      isOpen: false,
-      anchorEl: null
-    }));
-  };
 
   const classes = useStyles();
   const items = [];
@@ -106,15 +86,13 @@ const CategoryCard = props => {
             </Avatar>
           }
           action={
-            <IconButton aria-label="settings" onClick={(event) => handleOpen(event)} aria-haspopup="true">
-              <MoreVertIcon />
-            </IconButton>
+            <CustomVerticalActions object={category} handleDelete={handleDelete} handleEdit={handleEdit} />
           }
           title={category.name}
           subheader={category.description}
       />
       <CardContent className={classes.content}>
-        <PopperCustom anchorEl={state.anchorEl} isOpen={state.isOpen} handleClose={handleClose} handleEdit={handleEdit} handleDelete={handleDelete} category={category}/>
+
         <Paper style={{maxHeight: 300, overflow: 'auto'}}>
           <List>
             {items.map((item, i) => (

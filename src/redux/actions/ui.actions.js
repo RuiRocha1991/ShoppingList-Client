@@ -1,4 +1,5 @@
 import {
+  ITEM_CHANGE_ROWS_PER_PAGE_ON_TABLE,
   ITEM_CLOSE_DIALOG,
   ITEM_OPEN_DIALOG,
   UI_CLOSE_DELETE_DIALOG,
@@ -11,6 +12,7 @@ import {
   UI_SHOW_INFO_ERROR,
   UI_SHOW_INFO_SUCCESS,
 } from "../../Constants";
+import {fetchAllItemsByUser} from "./item.actions";
 
 export const fetchStart = () => ({
   type: UI_FETCHING_TRUE
@@ -66,3 +68,15 @@ export const openDeleteDialog = (data) => ({
 export const closeDeleteDialog = () => {
   return { type: UI_CLOSE_DELETE_DIALOG}
 };
+
+export const changePageOnItemsTable = (page) => (dispatch) => {
+  dispatch(fetchAllItemsByUser(page));
+}
+
+export const changeRowsPerPageOnItemsTable = (rowsPerPage) => (dispatch) => {
+  dispatch({
+    type: ITEM_CHANGE_ROWS_PER_PAGE_ON_TABLE,
+    payload: rowsPerPage
+  });
+  dispatch(fetchAllItemsByUser(0));
+}

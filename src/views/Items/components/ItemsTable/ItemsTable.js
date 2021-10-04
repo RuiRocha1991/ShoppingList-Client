@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles } from '@material-ui/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import {
   Card,
   CardActions,
@@ -15,13 +13,15 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TablePagination, Fab
+  TablePagination
 } from '@material-ui/core';
 import {
+  changePageOnItemsTable, changeRowsPerPageOnItemsTable,
   openDeleteDialog,
   openItemsDialog
 } from "../../../../redux/actions/ui.actions";
 import {connect} from "react-redux";
+import {CustomVerticalActions} from "../../../../components";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -49,20 +49,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ItemsTable = props => {
-  const { className, items, handleEdit, handleDelete, ...rest } = props;
+  const { className, items, handleEdit, handleDelete, handlePageChange, handleChangeRowsPerPage, ...rest } = props;
 
   const classes = useStyles();
 
-  const [rowsPerPage, setRowsPerPage] = useState(2);
-  const [page, setPage] = useState(0);
 
-  const handlePageChange = (event, page) => {
-    setPage(page);
-  };
 
-  const handleRowsPerPageChange = event => {
-    setRowsPerPage(event.target.value);
-  };
 
   return (
     <Card
@@ -84,7 +76,7 @@ const ItemsTable = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {items.items.slice(0, rowsPerPage).map(item => (
+                {items.items.map(item => (
                   <TableRow
                     className={classes.tableRow}
                     hover
@@ -97,14 +89,8 @@ const ItemsTable = props => {
                     <TableCell className={classes.hiddenColumns}>{item.unitMeasurement}</TableCell>
                     <TableCell className={classes.hiddenColumns}>0</TableCell>
                     <TableCell >{item.category.name}</TableCell>
-                    <TableCell style={{ width: 150 }}>
-                      <Fab aria-label="edit" size="small" className={classes.actionEdit}>
-                        <EditIcon onClick={() => handleEdit(item)}/>
-                      </Fab>
-                      <Fab aria-label="delete" size="small" className={classes.actions}>
-                        <DeleteIcon onClick={() => handleDelete(item)}/>
-                      </Fab>
-
+                    <TableCell style={{ width: 20 }}>
+                      <CustomVerticalActions handleEdit={handleEdit} handleDelete={handleDelete} object={item}/>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -116,12 +102,12 @@ const ItemsTable = props => {
       <CardActions className={classes.tableActions}>
         <TablePagination
           component="div"
-          count={items.items.length}
+          count={items.totalItems}
           onChangePage={handlePageChange}
-          onChangeRowsPerPage={handleRowsPerPageChange}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
           page={items.currentPage}
-          rowsPerPage={rowsPerPage}
-          rowsPerPageOptions={[2, 5, 10, 25]}
+          rowsPerPage={items.rowsPerPage}
+          rowsPerPageOptions={[5, 10, 25, 50, 100]}
         />
       </CardActions>
     </Card>
@@ -141,6 +127,12 @@ const mapDispatchToProps = (dispatch) => ({
   handleDelete: (item) => {
     dispatch(openDeleteDialog(item));
   },
+  handlePageChange: (event, page) => {
+    dispatch(changePageOnItemsTable(page + 1))
+  },
+  handleChangeRowsPerPage: (event) => {
+    dispatch(changeRowsPerPageOnItemsTable(event.target.value))
+  }
 })
 
 export default connect(null, mapDispatchToProps)(ItemsTable);
