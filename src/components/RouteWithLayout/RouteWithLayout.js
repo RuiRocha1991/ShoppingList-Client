@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(push('/sign-in'));
   },
   authenticatedRedirect: () => {
-    dispatch(push('/dashboard'));
+    dispatch(push('/shopping-list'));
   }
 })
 export default connect(mapStateToProps, mapDispatchToProps)(RouteWithLayout);

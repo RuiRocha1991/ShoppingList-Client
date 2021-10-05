@@ -25,7 +25,7 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
       dispatch(addToken(response.data.token));
       dispatch(fetchStop());
       // make a dispacth to add token to store
-      dispatch(push('/dashboard'));
+      dispatch(push('/shopping-list'));
     }
   }).catch(err => {
     dispatch(errorMessage(err));

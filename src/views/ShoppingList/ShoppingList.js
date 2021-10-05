@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
+  Grid,
   LinearProgress,
   Box,
 } from '@material-ui/core';
 import {
-  CategoriesToolbar,
-  CreateEditCategoryDialog, CreateEditItemDialog,
-  DeleteDialog, ItemTable
+  CreateEditShoppingListDialog,
+  DeleteDialog, ShoppingListCard, ShoppingListToolbar
 } from './components';
-
 import { connect } from 'react-redux';
 import { fetchAllCategories } from '../../redux/actions/category.actions';
+import shoppingList from "../../redux/reducers/shoppingList.reducer";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(1)
+    padding: theme.spacing(3)
   },
   processContent: {
     height: 50,
@@ -34,17 +34,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end'
-  },
-  hiddenColumns: {
-    [theme.breakpoints.down('xs')]: {
-      display: 'none'
-    }
-  },
+  }
 }));
 
-
-
-const Items = ({onLoadPage, categories, isFetching, deleteDialog, categoryDialog, itemDialog}) => {
+const ShoppingList = ({onLoadPage, shoppingLists, isFetching}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
@@ -52,16 +45,31 @@ const Items = ({onLoadPage, categories, isFetching, deleteDialog, categoryDialog
 
   return (
     <div className={classes.root}>
-     <CategoriesToolbar/>
+     <ShoppingListToolbar />
       <div className={classes.content}>
-        {!deleteDialog.isOpen && !categoryDialog.isOpen && !itemDialog.isOpen && isFetching &&
+        {isFetching &&
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
-        {categoryDialog.isOpen && <CreateEditCategoryDialog />}
-        {itemDialog.isOpen && <CreateEditItemDialog />}
-        {deleteDialog.isOpen && <DeleteDialog />}
-        {(!isFetching || (isFetching && (categoryDialog.isOpen || itemDialog.isOpen || deleteDialog.isOpen))) && <ItemTable categories={categories} />}
+        {<CreateEditShoppingListDialog />}
+        {<DeleteDialog />}
+          <Grid
+              container
+              spacing={3}
+          >
+            {!isFetching && shoppingLists.map(shoppingList => (
+                <Grid
+                    item
+                    key={shoppingList._id}
+                    lg={3}
+                    md={4}
+                    sm={6}
+                    xs={12}
+                >
+                  <ShoppingListCard shoppingList={shoppingList} />
+                </Grid>
+            ))}
+          </Grid>
       </div>
     </div>
   );
@@ -69,17 +77,14 @@ const Items = ({onLoadPage, categories, isFetching, deleteDialog, categoryDialog
 
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
-  categories: state.category.categories,
-  categoryDialog: state.category.dialogToCreateEditCategory,
-  itemDialog: state.category.dialogToCreateEditItem,
-  deleteDialog: state.category.dialogToDelete
+  shoppingLists: state.shoppingList.shoppingLists,
 })
 
 const mapDispatchToProps = (dispatch) => ({
   onLoadPage: () => {
-    dispatch(fetchAllCategories());
+    dispatch(() => console.log("fetch all shopping lists"));
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Items);
+export default connect(mapStateToProps, mapDispatchToProps)(ShoppingList);
 

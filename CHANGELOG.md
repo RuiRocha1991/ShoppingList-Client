@@ -41,7 +41,7 @@
 - Removed unused components from shared components
 - Removed `authGuard` since it won't be used in this version
 - Removed `auth` service folder since it won't be implemented for this version
-- Removed "status" from `CategoryCard` component since it was not part of released design
+- Removed "status" from `ShoppingListCard` component since it was not part of released design
 - Changed icon in `Users` widget (ArrowDropDown with ArrowDropUp)
 
 ### Fixed bugs
@@ -49,7 +49,7 @@
 - Fixed charts responsiveness
 - Fixed `DisplayMode` component size, when used as a flex child it could grow/shrink
 - Fixed `Typography` view responsiveness for small devices
-- [#2](https://github.com/devias-io/react-material-dashboard/pull/2) Fixed `CategoryCard` component description height
+- [#2](https://github.com/devias-io/react-material-dashboard/pull/2) Fixed `ShoppingListCard` component description height
 
 ## [0.1.0] 2019-05-02
 

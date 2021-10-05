@@ -28,7 +28,7 @@ const useRowStyles = makeStyles(theme => ({
     height: '50px'
   },
   hiddenColumns: {
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('md')]: {
       display: 'none'
     }
   },
@@ -44,7 +44,7 @@ const ItemRow = ({category, handleEdit, handleDelete, handleCreateItemDialog, ha
   return (
       <React.Fragment>
         <TableRow hover className={classes.root} style={style}>
-          <TableCell style={{maxWidth: '50px'}}>
+          <TableCell>
             <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
@@ -52,8 +52,8 @@ const ItemRow = ({category, handleEdit, handleDelete, handleCreateItemDialog, ha
           <TableCell component="th" scope="row">
             {category.name}
           </TableCell>
-          <TableCell align="right">{category.items.length}</TableCell>
-          <TableCell align="right">{0}</TableCell>
+          <TableCell align="right" className={classes.hiddenColumns}>{category.items.length}</TableCell>
+          <TableCell align="right" className={classes.hiddenColumns}>{0}</TableCell>
           <TableCell align="right" className={classes.hiddenColumns}>{moment(category.updatedAt).format('DD/MM/YYYY')}</TableCell>
           <TableCell align="right">
             <CustomVerticalActions category={category} handleCreateItemDialog={handleCreateItemDialog} handleEdit={handleEdit} handleDelete={handleDelete} />
@@ -62,7 +62,7 @@ const ItemRow = ({category, handleEdit, handleDelete, handleCreateItemDialog, ha
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box margin={1}>
+              <Box>
                 <Typography variant="h6" gutterBottom component="div">
                   Items
                 </Typography>
