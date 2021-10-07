@@ -12,6 +12,7 @@ import {
 import { connect } from 'react-redux';
 import { fetchAllCategories } from '../../redux/actions/category.actions';
 import shoppingList from "../../redux/reducers/shoppingList.reducer";
+import {fetchAllShoppingLists} from "../../redux/actions/shoppingList.actions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ShoppingList = ({onLoadPage, shoppingLists, isFetching}) => {
+const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
@@ -51,7 +52,7 @@ const ShoppingList = ({onLoadPage, shoppingLists, isFetching}) => {
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
-        {<CreateEditShoppingListDialog />}
+        {dialogToCreateEdit.isOpen && <CreateEditShoppingListDialog />}
         {<DeleteDialog />}
           <Grid
               container
@@ -78,11 +79,12 @@ const ShoppingList = ({onLoadPage, shoppingLists, isFetching}) => {
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
   shoppingLists: state.shoppingList.shoppingLists,
+  dialogToCreateEdit: state.shoppingList.dialogToCreateEditList
 })
 
 const mapDispatchToProps = (dispatch) => ({
   onLoadPage: () => {
-    dispatch(() => console.log("fetch all shopping lists"));
+    dispatch(fetchAllShoppingLists());
   },
 })
 

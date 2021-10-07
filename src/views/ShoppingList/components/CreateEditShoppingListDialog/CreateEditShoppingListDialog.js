@@ -1,21 +1,33 @@
 import React, {useEffect, useState} from 'react';
 import validate from 'validate.js';
 import {
-  Button, CircularProgress, Dialog,
+  Button,
+  Chip,
+  CircularProgress,
+  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton, makeStyles, TextField,
-  Typography, useMediaQuery, useTheme,
+  FormControl,
+  IconButton,
+  Input,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
   withStyles
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import {
-  createCategory,
-  editCategory
-} from "../../../../redux/actions/category.actions";
 
 import {connect} from "react-redux";
+import {
+  closeDialogToCreateEditShoppingList,
+  createShoppingList
+} from "../../../../redux/actions/shoppingList.actions";
 
 
 const styles = (theme) => ({
@@ -65,6 +77,9 @@ const schema = {
     length: {
       maximum: 50
     },
+  },
+  categories: {
+    presence: { allowEmpty: false, message: 'is required' },
   }
 };
 
@@ -113,19 +128,48 @@ const useStyles = makeStyles((theme) => ({
   progress: {
     marginRight: theme.spacing(1)
   },
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  chip: {
+    margin: 2,
+  },
 }));
 
-const CreateEditShoppingListDialog = ({category, handleClose, handleSave, isFetching}) => {
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+
+function getStyles(categoryId, categoriesSelected, theme) {
+  return {
+    fontWeight:
+        categoriesSelected.find(cat => cat._id === categoryId) !== undefined
+            ? theme.typography.fontWeightRegular
+            : theme.typography.fontWeightMedium,
+  };
+}
+
+const CreateEditShoppingListDialog = ({list, handleClose, handleSave, isFetching, dialogConfig, categories}) => {
   const [formState, setFormState] = useState( {
       isValid: false,
       values: {
-        name: category ? category.name : '',
-        description: category ? category.description : '',
+        name: list ? list.name : '',
+        description: list ? list.description : '',
+        categories:  list ? list.categories : []
       },
       touched: {},
       remaining: {
-        name: category ? schema.name.length.maximum - category.name.length : schema.name.length.maximum,
-        description: category ? schema.description.length.maximum - category.description.length : schema.description.length.maximum
+        name: list ? schema.name.length.maximum - list.name.length : schema.name.length.maximum,
+        description: list ? schema.description.length.maximum - list.description.length : schema.description.length.maximum
       },
       errors: {}
   });
@@ -164,9 +208,13 @@ const CreateEditShoppingListDialog = ({category, handleClose, handleSave, isFetc
     }));
   };
 
-  const calculateRemaining = (target) => ({
+  const calculateRemaining = (target) => {
+    if(target.name !== 'categories'){
+      return {
         [target.name]: schema[target.name].length.maximum - target.value.length
-      })
+      }
+    }
+  }
 
   return (
     <div>
@@ -180,13 +228,13 @@ const CreateEditShoppingListDialog = ({category, handleClose, handleSave, isFetc
             handleClose();
           }
         }}
-        open={false}
+        open={dialogConfig.isOpen}
       >
         <DialogTitleCustom
           id="customized-dialog-title"
           onClose={handleClose}
         >
-          {category ? 'Edit Category' : 'New Category'}
+          {list ? 'Edit Shopping List' : 'New Shopping List'}
         </DialogTitleCustom>
         <DialogContentCustom dividers>
           <div className={classes.contentBody}>
@@ -223,6 +271,33 @@ const CreateEditShoppingListDialog = ({category, handleClose, handleSave, isFetc
                   inputProps={{ maxLength: schema.description.length.maximum }}
 
               />
+              <FormControl fullWidth className={classes.textField}>
+                <InputLabel id="categories-label">Categories</InputLabel>
+                <Select
+                    error={hasError('categories')}
+                    name="categories"
+                    aria-labelledby="categories-label"
+                    id="categories-chip"
+                    multiple
+                    value={formState.values.categories}
+                    onChange={handleChange}
+                    input={<Input id="select-multiple-chip" />}
+                    renderValue={(selected) => (
+                        <div className={classes.chips}>
+                          {selected.map((value) => (
+                              <Chip key={value._id} label={value.name} className={classes.chip} />
+                          ))}
+                        </div>
+                    )}
+                    MenuProps={MenuProps}
+                >
+                  {categories.data.map((category) => (
+                      <MenuItem key={category._id} value={category} style={getStyles(category, formState.values.categories, theme)}>
+                        {category.name}
+                      </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </form>
           </div>
 
@@ -230,10 +305,10 @@ const CreateEditShoppingListDialog = ({category, handleClose, handleSave, isFetc
         <DialogActionsCustom>
           {isFetching && <CircularProgress size={20} color='inherit' className={classes.progress} />}
           <Button
-            disabled={ formState.values.name.length === 0 || isFetching}
+            disabled={ formState.values.categories.length === 0 || formState.values.name.length === 0 || isFetching}
             autoFocus
             color="primary"
-            onClick={() => handleSave(formState.values, category)}
+            onClick={() => handleSave(formState.values, list)}
           >
             Save changes
           </Button>
@@ -245,19 +320,21 @@ const CreateEditShoppingListDialog = ({category, handleClose, handleSave, isFetc
 
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
+  dialogConfig: state.shoppingList.dialogToCreateEditList,
+  categories: state.shoppingList.categories,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  handleSave: (newFormValues, category) => {
-    if (category) {
-      dispatch(editCategory(newFormValues, category));
+  handleSave: (newFormValues, shoppingList) => {
+    if (shoppingList) {
+      dispatch(() => console.log("Edit shopping list"));
     } else {
-      dispatch(createCategory(newFormValues));
+      dispatch(createShoppingList(newFormValues));
     }
 
   },
   handleClose: () => {
-    dispatch(() => console.log("close"));
+    dispatch(closeDialogToCreateEditShoppingList());
   },
 })
 

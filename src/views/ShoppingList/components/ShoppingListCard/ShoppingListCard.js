@@ -17,6 +17,11 @@ import {
   ListItem,
   ListItemText,
   Paper,
+  ListItemIcon,
+  Checkbox,
+  ListSubheader,
+  ListItemSecondaryAction,
+  TextField,
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -35,8 +40,8 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     padding: 0,
-    height: "300px",
-    maxHeight: "300px"
+    height: "500px",
+    maxHeight: "500px"
   },
   image: {
     height: 48,
@@ -49,26 +54,25 @@ const useStyles = makeStyles(theme => ({
   statsIcon: {
     color: theme.palette.icon,
     marginRight: theme.spacing(1)
-  }
+  },
+  listSection: {
+    backgroundColor: theme.palette.background.paper,
+  },
+  ul: {
+    backgroundColor: theme.palette.background.paper,
+    padding: 0,
+  },
 }));
-
-const calculateLastUpdateTime = (lastUpdate) => {
-  const now = moment(new Date());
-
-  if(now.diff(lastUpdate,'days') > 0) {
-    return now.diff(lastUpdate,'days') + 'days';
-  } else if(now.diff(lastUpdate,'hours') > 0) {
-    return now.diff(lastUpdate,'hours') + 'hr';
-  } else {
-      return now.diff(lastUpdate,'minutes') + 'min'
-    }
-}
 
 const ShoppingListCard = props => {
   const { className, shoppingList, handleEdit, handleDelete, ...rest } = props;
   const [state, setState] = React.useState({
     anchorEl: null,
     isOpen: false
+  });
+
+  const [listItems, setListItems] = React.useState({
+    items: shoppingList ? [{listName: 'Selected Items', list: shoppingList.selectedItems},{listName: 'Unselected Items', list:shoppingList.unselectedItem}] : [{listName: '', list:[]}]
   });
 
   const handleOpen = (event) => {
@@ -88,7 +92,6 @@ const ShoppingListCard = props => {
   };
 
   const classes = useStyles();
-  const items = [];
   return (
     <Card
       {...rest}
@@ -110,17 +113,30 @@ const ShoppingListCard = props => {
           subheader={shoppingList.description}
       />
       <CardContent className={classes.content}>
-        <Paper style={{maxHeight: 300, overflow: 'auto'}}>
-          <List>
-            <ListItem
-                divider={true}
-                key={0}
-            >
-              <ListItemText
-                  primary={'Test'}
-              />
-
-            </ListItem>
+        <Paper style={{maxHeight: 500, overflow: 'auto'}}>
+          <List className={classes.root} subheader={<li />}>
+            {listItems.items.map((section) => (
+                <li key={`section-${section.listName}`} className={classes.listSection}>
+                  <ul className={classes.ul}>
+                    <ListSubheader>{section.listName}</ListSubheader>
+                    {section.list.map((item) => (
+                        <ListItem key={`item-${item._id}`} divider={true}>
+                          <ListItemIcon>
+                            <Checkbox
+                                edge="start"
+                                tabIndex={-1}
+                                disableRipple
+                            />
+                          </ListItemIcon>
+                          <ListItemText primary={item.item.name} />
+                          <ListItemSecondaryAction>
+                            <TextField type="number" value={item.item.defaultQuantity} style={{textAlign: 'right', maxWidth: '50px'}}/> <ListItemText secondary={item.item.unitMeasurement} />
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                    ))}
+                  </ul>
+                </li>
+            ))}
           </List>
         </Paper>
       </CardContent>

@@ -22,10 +22,8 @@ export const googleAuthSignInSuccess =  (response) => async (dispatch) => {
     if (response.status === 200) {
       const {name, image, email} = response.data.user;
       dispatch(signInSuccess({name, email, image}));
-      dispatch(addToken(response.data.token));
+      dispatch(addToken(response.data.token))
       dispatch(fetchStop());
-      // make a dispacth to add token to store
-      dispatch(push('/shopping-list'));
     }
   }).catch(err => {
     dispatch(errorMessage(err));
@@ -66,7 +64,7 @@ export const signOutSuccess = () => (dispatch) => {
 
 export const addToken = (token) => (dispatch) => {
   if (store.getState().user.token !== token){
-  dispatch({type: USER_ADD_TOKEN, payload: token});
+    dispatch({type: USER_ADD_TOKEN, payload: token});
   }
 };
 

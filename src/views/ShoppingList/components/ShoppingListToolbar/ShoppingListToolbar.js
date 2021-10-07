@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
-import { Button } from '@material-ui/core';
+import {Button, CircularProgress} from '@material-ui/core';
 
 import {connect} from "react-redux";
 import SnackbarCustom
   from "../../../../components/SnackbarCustom/SnackbarCustom";
+import {openDialogToCreateShoppingList} from "../../../../redux/actions/shoppingList.actions";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -21,11 +22,14 @@ const useStyles = makeStyles(theme => ({
   },
   searchInput: {
     marginRight: theme.spacing(1),
-  }
+  },
+  progress: {
+    marginRight: theme.spacing(1)
+  },
 }));
 
 const ShoppingListToolbar = props => {
-  const { className, handleOpenDialog, ...rest } = props;
+  const { className, handleOpenDialog, categories, ...rest } = props;
 
   const classes = useStyles();
 
@@ -42,7 +46,7 @@ const ShoppingListToolbar = props => {
           variant="contained"
           onClick={handleOpenDialog}
         >
-          Add List
+          {categories.isFetching && <CircularProgress size={20} color='inherit' className={classes.progress} />} <span>Add List</span>
         </Button>
       </div>
     </div>
@@ -53,10 +57,14 @@ ShoppingListToolbar.propTypes = {
   className: PropTypes.string
 };
 
+const mapStateToProps = (state) => ({
+  categories: state.shoppingList.categories,
+})
+
 const mapDispatchToProps = (dispatch) => ({
   handleOpenDialog: () => {
-    dispatch(() => console.log("close"));
+    dispatch(openDialogToCreateShoppingList());
   }
 });
 
-export default connect(null, mapDispatchToProps)(ShoppingListToolbar)
+export default connect(mapStateToProps, mapDispatchToProps)(ShoppingListToolbar)
