@@ -26,7 +26,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import {connect} from "react-redux";
 import {
   closeDialogToCreateEditShoppingList,
-  createShoppingList
+  createShoppingList, editShoppingList
 } from "../../../../redux/actions/shoppingList.actions";
 
 
@@ -135,6 +135,13 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
+  selectMenuItem: {
+    fontWeight: theme.typography.fontWeightRegular
+  },
+  selectMenuItemSelectedMultiple: {
+    fontWeight: theme.typography.fontWeightMedium
+  }
+
 }));
 
 const ITEM_HEIGHT = 48;
@@ -148,23 +155,13 @@ const MenuProps = {
   },
 };
 
-
-function getStyles(categoryId, categoriesSelected, theme) {
-  return {
-    fontWeight:
-        categoriesSelected.find(cat => cat._id === categoryId) !== undefined
-            ? theme.typography.fontWeightRegular
-            : theme.typography.fontWeightMedium,
-  };
-}
-
 const CreateEditShoppingListDialog = ({list, handleClose, handleSave, isFetching, dialogConfig, categories}) => {
   const [formState, setFormState] = useState( {
       isValid: false,
       values: {
         name: list ? list.name : '',
         description: list ? list.description : '',
-        categories:  list ? list.categories : []
+        categories:  list ? list.categories.map(cat => cat._id) : []
       },
       touched: {},
       remaining: {
@@ -284,15 +281,20 @@ const CreateEditShoppingListDialog = ({list, handleClose, handleSave, isFetching
                     input={<Input id="select-multiple-chip" />}
                     renderValue={(selected) => (
                         <div className={classes.chips}>
-                          {selected.map((value) => (
-                              <Chip key={value._id} label={value.name} className={classes.chip} />
-                          ))}
+                          {selected.map( (value) => {
+                            const category = categories.data.find(cat => cat._id === value);
+                           return ( <Chip key={category._id} label={category.name}
+                                  className={classes.chip}/>)
+                          })}
                         </div>
                     )}
                     MenuProps={MenuProps}
                 >
                   {categories.data.map((category) => (
-                      <MenuItem key={category._id} value={category} style={getStyles(category, formState.values.categories, theme)}>
+                      <MenuItem key={category._id} value={category._id} classes={{
+                        root: classes.selectMenuItem,
+                        selected: classes.selectMenuItemSelectedMultiple
+                      }}>
                         {category.name}
                       </MenuItem>
                   ))}
@@ -321,13 +323,14 @@ const CreateEditShoppingListDialog = ({list, handleClose, handleSave, isFetching
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
   dialogConfig: state.shoppingList.dialogToCreateEditList,
+  list: state.shoppingList.dialogToCreateEditList.shoppingList,
   categories: state.shoppingList.categories,
 })
 
 const mapDispatchToProps = (dispatch) => ({
   handleSave: (newFormValues, shoppingList) => {
     if (shoppingList) {
-      dispatch(() => console.log("Edit shopping list"));
+      dispatch(editShoppingList(newFormValues, shoppingList));
     } else {
       dispatch(createShoppingList(newFormValues));
     }

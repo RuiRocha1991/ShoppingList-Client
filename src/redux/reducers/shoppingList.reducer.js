@@ -1,6 +1,6 @@
 import {
   SHOPPING_LIST_CREATE_EDIT_CLOSE,
-  SHOPPING_LIST_CREATE_OPEN,
+  SHOPPING_LIST_CREATE_OPEN, SHOPPING_LIST_EDIT_OPEN,
   SHOPPING_LIST_FETCH_ALL, SHOPPING_LIST_FETCH_ALL_SUCCESS,
   SHOPPING_LIST_FETCHING_CATEGORIES_FALSE,
   SHOPPING_LIST_FETCHING_CATEGORIES_TRUE
@@ -59,10 +59,17 @@ export default (state = initialState, action) => {
         }
       }
     case SHOPPING_LIST_FETCH_ALL_SUCCESS:
-      console.log(action.payload);
       return {
         ...state,
         shoppingLists: action.payload
+      }
+    case SHOPPING_LIST_EDIT_OPEN:
+      return {
+        ...state,
+        dialogToCreateEditList: {
+          isOpen: true,
+          shoppingList: action.payload,
+        },
       }
     default:
       return state;

@@ -1,7 +1,8 @@
 import {
-  CATEGORY_FETCH_ALL,
   SHOPPING_LIST_CREATE_EDIT_CLOSE,
-  SHOPPING_LIST_CREATE_OPEN, SHOPPING_LIST_FETCH_ALL_SUCCESS,
+  SHOPPING_LIST_CREATE_OPEN,
+  SHOPPING_LIST_EDIT_OPEN,
+  SHOPPING_LIST_FETCH_ALL_SUCCESS,
   SHOPPING_LIST_FETCHING_CATEGORIES_FALSE,
   SHOPPING_LIST_FETCHING_CATEGORIES_TRUE,
 } from "../../Constants";
@@ -100,3 +101,49 @@ export const fecthAllShoppingListSuccess = (data) => ({
   type: SHOPPING_LIST_FETCH_ALL_SUCCESS,
   payload: data
 });
+
+export const openDialogToEdit = (data) => dispatch => {
+  const token = store.getState().user.token;
+  axios({
+    method: 'GET',
+    url: `${process.env.REACT_APP_SERVER_URL}/category/shopping-list`,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    if (response.status === 200) {
+      dispatch(fetchCategoriesStop(response.data));
+      dispatch({
+        type: SHOPPING_LIST_EDIT_OPEN,
+        payload: data
+      })
+    }
+  }).catch(err => {
+    dispatch(errorMessage(err));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+};
+
+export const editShoppingList = (newShoppingList, shoppingList) => (dispatch) => {
+  dispatch(fetchStart());
+  const token = store.getState().user.token;
+
+  axios({
+    method: 'PUT',
+    url: `${process.env.REACT_APP_SERVER_URL}/shopping-list/${shoppingList._id}`,
+    data: newShoppingList,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    dispatch(showSuccessMessage({message: response.data.message}))
+    dispatch(fetchAllShoppingLists());
+    dispatch(fetchStop());
+    dispatch(closeDialogToCreateEditShoppingList());
+  }).catch(err => {
+    dispatch(errorMessage(err));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+};

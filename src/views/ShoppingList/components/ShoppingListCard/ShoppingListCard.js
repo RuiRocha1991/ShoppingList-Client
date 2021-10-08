@@ -25,10 +25,11 @@ import {
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import ViewListIcon from '@material-ui/icons/ViewList';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getInitials} from "../../../../helpers";
-import moment from "moment";
 import {connect} from "react-redux";
+import {CustomVerticalActions} from "./components";
+import {openDialogToEdit} from "../../../../redux/actions/shoppingList.actions";
+
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -66,30 +67,9 @@ const useStyles = makeStyles(theme => ({
 
 const ShoppingListCard = props => {
   const { className, shoppingList, handleEdit, handleDelete, ...rest } = props;
-  const [state, setState] = React.useState({
-    anchorEl: null,
-    isOpen: false
-  });
-
   const [listItems, setListItems] = React.useState({
     items: shoppingList ? [{listName: 'Selected Items', list: shoppingList.selectedItems},{listName: 'Unselected Items', list:shoppingList.unselectedItem}] : [{listName: '', list:[]}]
   });
-
-  const handleOpen = (event) => {
-    setState((state) => ({
-      ...state,
-      isOpen: !state.isOpen,
-      anchorEl: event.currentTarget
-    }));
-  };
-
-  const handleClose = () => {
-    setState((state) => ({
-      ...state,
-      isOpen: false,
-      anchorEl: null
-    }));
-  };
 
   const classes = useStyles();
   return (
@@ -105,9 +85,7 @@ const ShoppingListCard = props => {
             </Avatar>
           }
           action={
-            <IconButton aria-label="settings" onClick={(event) => handleOpen(event)} aria-haspopup="true">
-              <MoreVertIcon />
-            </IconButton>
+            <CustomVerticalActions shoppingList={shoppingList} handleEdit={handleEdit} handleDelete={handleDelete} />
           }
           title={shoppingList.name}
           subheader={shoppingList.description}
@@ -176,17 +154,12 @@ const ShoppingListCard = props => {
   );
 };
 
-ShoppingListCard.propTypes = {
-  className: PropTypes.string,
-  category: PropTypes.object.isRequired
-};
-
 const mapDispatchToProps = (dispatch) => ({
-  handleEdit: (category) => {
-    dispatch(() => console.log("close"));
+  handleEdit: (shoppingList) => {
+    dispatch(openDialogToEdit(shoppingList));
   },
-  handleDelete: (category) => {
-    dispatch(() => console.log("close"));
+  handleDelete: (shoppingList) => {
+    dispatch(() => console.log("delete"));
   },
 })
 
