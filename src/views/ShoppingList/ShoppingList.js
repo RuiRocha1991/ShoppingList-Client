@@ -10,8 +10,6 @@ import {
   DeleteDialog, ShoppingListCard, ShoppingListToolbar
 } from './components';
 import { connect } from 'react-redux';
-import { fetchAllCategories } from '../../redux/actions/category.actions';
-import shoppingList from "../../redux/reducers/shoppingList.reducer";
 import {fetchAllShoppingLists} from "../../redux/actions/shoppingList.actions";
 
 const useStyles = makeStyles(theme => ({
@@ -48,7 +46,7 @@ const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit
     <div className={classes.root}>
      <ShoppingListToolbar />
       <div className={classes.content}>
-        {isFetching &&
+        {isFetching && !dialogToCreateEdit.isOpen &&
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
@@ -58,7 +56,7 @@ const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit
               container
               spacing={3}
           >
-            {!isFetching && shoppingLists.map(shoppingList => (
+            {(!isFetching || (isFetching && (dialogToCreateEdit.isOpen))) && shoppingLists.map(shoppingList => (
                 <Grid
                     item
                     key={shoppingList._id}

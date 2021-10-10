@@ -73,15 +73,10 @@ export const fetchCategoriesStop = (data) => ({
 export const createShoppingList = (shoppingList) => (dispatch) => {
   dispatch(fetchStart());
   const token = store.getState().user.token;
-  const categories = shoppingList.categories.map(category => category._id);
-  const list = {
-    ...shoppingList,
-    categories
-  }
   axios({
     method: 'POST',
     url: `${process.env.REACT_APP_SERVER_URL}/shopping-list`,
-    data: list,
+    data: shoppingList,
     headers: { token },
     withCredentials: true
   }).then(response => {
@@ -136,9 +131,9 @@ export const editShoppingList = (newShoppingList, shoppingList) => (dispatch) =>
     headers: { token },
     withCredentials: true
   }).then(response => {
+    dispatch(fetchStop());
     dispatch(showSuccessMessage({message: response.data.message}))
     dispatch(fetchAllShoppingLists());
-    dispatch(fetchStop());
     dispatch(closeDialogToCreateEditShoppingList());
   }).catch(err => {
     dispatch(errorMessage(err));

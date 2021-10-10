@@ -67,9 +67,6 @@ const useStyles = makeStyles(theme => ({
 
 const ShoppingListCard = props => {
   const { className, shoppingList, handleEdit, handleDelete, ...rest } = props;
-  const [listItems, setListItems] = React.useState({
-    items: shoppingList ? [{listName: 'Selected Items', list: shoppingList.selectedItems},{listName: 'Unselected Items', list:shoppingList.unselectedItem}] : [{listName: '', list:[]}]
-  });
 
   const classes = useStyles();
   return (
@@ -93,7 +90,7 @@ const ShoppingListCard = props => {
       <CardContent className={classes.content}>
         <Paper style={{maxHeight: 500, overflow: 'auto'}}>
           <List className={classes.root} subheader={<li />}>
-            {listItems.items.map((section) => (
+            {shoppingList.listItems.map((section) => (
                 <li key={`section-${section.listName}`} className={classes.listSection}>
                   <ul className={classes.ul}>
                     <ListSubheader>{section.listName}</ListSubheader>
