@@ -1,6 +1,8 @@
 import {
   SHOPPING_LIST_CREATE_EDIT_CLOSE,
   SHOPPING_LIST_CREATE_OPEN,
+  SHOPPING_LIST_DELETE_OPEN,
+  SHOPPING_LIST_DELETE_SUCCESS,
   SHOPPING_LIST_EDIT_OPEN,
   SHOPPING_LIST_FETCH_ALL_SUCCESS,
   SHOPPING_LIST_FETCHING_CATEGORIES_FALSE,
@@ -142,3 +144,35 @@ export const editShoppingList = (newShoppingList, shoppingList) => (dispatch) =>
     }
   });
 };
+
+export const openDeleteDialog = (data) => ({
+  type: SHOPPING_LIST_DELETE_OPEN,
+  payload: data
+});
+
+export const closeDeleteDialog = () => ({
+  type: SHOPPING_LIST_DELETE_SUCCESS,
+});
+
+export const deleteShoppingList = (shoppingList) => (dispatch) => {
+  dispatch(fetchStart());
+  const token = store.getState().user.token;
+  axios({
+    method: 'DELETE',
+    url: `${process.env.REACT_APP_SERVER_URL}/shopping-list/${shoppingList._id}`,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    if (response.status === 200) {
+      dispatch(fetchStop());
+      dispatch(closeDeleteDialog());
+      dispatch(showSuccessMessage({message: response.data.message}))
+      dispatch(fetchAllShoppingLists());
+    }
+  }).catch(err => {
+    dispatch(errorMessage(err.response.data));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+}

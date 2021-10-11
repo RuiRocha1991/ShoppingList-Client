@@ -1,7 +1,10 @@
 import {
   SHOPPING_LIST_CREATE_EDIT_CLOSE,
-  SHOPPING_LIST_CREATE_OPEN, SHOPPING_LIST_EDIT_OPEN,
-  SHOPPING_LIST_FETCH_ALL, SHOPPING_LIST_FETCH_ALL_SUCCESS,
+  SHOPPING_LIST_CREATE_OPEN,
+  SHOPPING_LIST_DELETE_OPEN, SHOPPING_LIST_DELETE_SUCCESS,
+  SHOPPING_LIST_EDIT_OPEN,
+  SHOPPING_LIST_FETCH_ALL,
+  SHOPPING_LIST_FETCH_ALL_SUCCESS,
   SHOPPING_LIST_FETCHING_CATEGORIES_FALSE,
   SHOPPING_LIST_FETCHING_CATEGORIES_TRUE
 } from '../../Constants'
@@ -15,6 +18,10 @@ const initialState = {
   categories: {
     isFetching: false,
     data: []
+  },
+  deleteDialog: {
+    isOpen : false,
+    shoppingList: undefined
   }
 }
 
@@ -70,6 +77,22 @@ export default (state = initialState, action) => {
           isOpen: true,
           shoppingList: action.payload,
         },
+      }
+    case SHOPPING_LIST_DELETE_OPEN:
+      return {
+        ...state,
+        deleteDialog: {
+          isOpen: true,
+          shoppingList: action.payload
+        }
+      }
+    case SHOPPING_LIST_DELETE_SUCCESS:
+      return {
+        ...state,
+        deleteDialog: {
+          isOpen: false,
+          shoppingList: undefined
+        }
       }
     default:
       return state;

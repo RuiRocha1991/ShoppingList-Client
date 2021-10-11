@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit}) => {
+const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit, deleteDialog}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
@@ -46,17 +46,18 @@ const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit
     <div className={classes.root}>
      <ShoppingListToolbar />
       <div className={classes.content}>
-        {isFetching && !dialogToCreateEdit.isOpen &&
+        {isFetching && !dialogToCreateEdit.isOpen && !deleteDialog.isOpen &&
         <Box component={'div'} boxShadow={3} className={classes.processContent} >
           <LinearProgress className={classes.progress}/>
         </Box>}
         {dialogToCreateEdit.isOpen && <CreateEditShoppingListDialog />}
+        {deleteDialog.isOpen && <DeleteDialog />}
         {<DeleteDialog />}
           <Grid
               container
               spacing={3}
           >
-            {(!isFetching || (isFetching && (dialogToCreateEdit.isOpen))) && shoppingLists.map(shoppingList => (
+            {(!isFetching || (isFetching && (dialogToCreateEdit.isOpen || deleteDialog.isOpen ))) && shoppingLists.map(shoppingList => (
                 <Grid
                     item
                     key={shoppingList._id}
@@ -77,7 +78,8 @@ const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit
 const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
   shoppingLists: state.shoppingList.shoppingLists,
-  dialogToCreateEdit: state.shoppingList.dialogToCreateEditList
+  dialogToCreateEdit: state.shoppingList.dialogToCreateEditList,
+  deleteDialog: state.shoppingList.deleteDialog
 })
 
 const mapDispatchToProps = (dispatch) => ({

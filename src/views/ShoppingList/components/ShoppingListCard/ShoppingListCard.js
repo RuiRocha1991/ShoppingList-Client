@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { red } from '@material-ui/core/colors';
@@ -12,7 +11,6 @@ import {
   Divider,
   CardHeader,
   Avatar,
-  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -28,7 +26,10 @@ import ViewListIcon from '@material-ui/icons/ViewList';
 import {getInitials} from "../../../../helpers";
 import {connect} from "react-redux";
 import {CustomVerticalActions} from "./components";
-import {openDialogToEdit} from "../../../../redux/actions/shoppingList.actions";
+import {
+  openDeleteDialog,
+  openDialogToEdit
+} from "../../../../redux/actions/shoppingList.actions";
 
 
 const useStyles = makeStyles(theme => ({
@@ -156,7 +157,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(openDialogToEdit(shoppingList));
   },
   handleDelete: (shoppingList) => {
-    dispatch(() => console.log("delete"));
+    dispatch(openDeleteDialog(shoppingList));
   },
 })
 

@@ -6,9 +6,9 @@ import {
   DialogContentText,
   DialogTitle, Typography
 } from "@material-ui/core";
-import {deleteCategory,} from "../../../../redux/actions/category.actions";
 import {connect} from "react-redux";
 import {makeStyles} from "@material-ui/styles";
+import {deleteShoppingList, closeDeleteDialog} from "../../../../redux/actions/shoppingList.actions";
 
 const useStyles = makeStyles(theme => ({
   process: {
@@ -16,29 +16,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DeleteDialog = ({}) => {
+const DeleteDialog = ({dialog, isFetching, handleClose, handleDelete}) => {
   const classes = useStyles();
   return ( <Dialog
-      open={false}
-      onClose={() => console.log("close")}
+      open={dialog.isOpen}
+      onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
   >
     <DialogTitle id="alert-dialog-title">{"Delete Category"}</DialogTitle>
     <DialogContent>
       <DialogContentText id="alert-dialog-description">
-        Are you sure you want to delete this category?
-        <Typography variant={'h3'}>
-          name
-        </Typography>
+        Are you sure you want to delete this Shopping List ?
+        {dialog.shoppingList && <Typography variant={'h3'}>
+          {dialog.shoppingList.name}
+        </Typography>}
       </DialogContentText>
     </DialogContent>
     <DialogActions>
-      <Button onClick={() => console.log("close")} color="primary">
+      <Button onClick={() => handleClose()} color="primary">
         Cancel
       </Button>
-      <Button onClick={() => console.log("close")} color="primary" autoFocus>
-         <CircularProgress size={20} color='inherit' className={classes.progress} /> Delete
+      <Button onClick={() => handleDelete(dialog.shoppingList)} color="primary" autoFocus>
+        {isFetching && <CircularProgress size={20} color='inherit' className={classes.progress}/>} Delete
       </Button>
     </DialogActions>
   </Dialog>)
@@ -46,11 +46,17 @@ const DeleteDialog = ({}) => {
 
 
 const mapStateToProps = (state) => ({
-
+  dialog: state.shoppingList.deleteDialog,
+  isFetching: state.ui.isFetching,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-
+  handleDelete: (shoppingList) => {
+    dispatch(deleteShoppingList(shoppingList));
+  },
+  handleClose: () => {
+    dispatch(closeDeleteDialog());
+  },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteDialog)
