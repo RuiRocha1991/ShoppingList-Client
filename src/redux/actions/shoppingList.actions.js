@@ -7,6 +7,16 @@ import {
   SHOPPING_LIST_FETCH_ALL_SUCCESS,
   SHOPPING_LIST_FETCHING_CATEGORIES_FALSE,
   SHOPPING_LIST_FETCHING_CATEGORIES_TRUE,
+  SHOPPING_LIST_PURCHASES_ADD_ITEMS,
+  SHOPPING_LIST_PURCHASES_CHANGE_QUANTITY_SELECTED_LIST,
+  SHOPPING_LIST_PURCHASES_CHANGE_QUANTITY_UNSELECTED_LIST,
+  SHOPPING_LIST_PURCHASES_CHECK_ITEM_TO_ADD,
+  SHOPPING_LIST_PURCHASES_CHECK_ITEM_TO_REMOVE,
+  SHOPPING_LIST_PURCHASES_DIALOG_CLOSE,
+  SHOPPING_LIST_PURCHASES_DIALOG_OPEN,
+  SHOPPING_LIST_PURCHASES_REMOVE_ITEMS,
+  SHOPPING_LIST_PURCHASES_SORT_SELECTED_ITEMS,
+  SHOPPING_LIST_PURCHASES_SORT_UNSELECTED_ITEMS,
 } from "../../Constants";
 import {
   errorMessage, fetchStart, fetchStop, showSuccessMessage,
@@ -176,3 +186,73 @@ export const deleteShoppingList = (shoppingList) => (dispatch) => {
     }
   });
 }
+
+export const openPurchasesDialog = (data) => ({
+  type: SHOPPING_LIST_PURCHASES_DIALOG_OPEN,
+  payload: data
+});
+
+export const closePurchasesDialog = () => ({
+  type: SHOPPING_LIST_PURCHASES_DIALOG_CLOSE
+});
+
+export const updateUnselectedItems = (list) => ({
+  type: SHOPPING_LIST_PURCHASES_SORT_UNSELECTED_ITEMS,
+  payload: list
+});
+
+export const updateSelectedItems = (list) => ({
+  type: SHOPPING_LIST_PURCHASES_SORT_SELECTED_ITEMS,
+  payload: list
+});
+
+export const addItems = () => ({
+  type: SHOPPING_LIST_PURCHASES_ADD_ITEMS,
+});
+
+export const removeItems = () => ({
+  type: SHOPPING_LIST_PURCHASES_REMOVE_ITEMS,
+});
+
+export const changeQuantityOnUnselected = (id, quantity) => ({
+  type: SHOPPING_LIST_PURCHASES_CHANGE_QUANTITY_UNSELECTED_LIST,
+  payload: {id, quantity}
+});
+
+export const changeQuantityOnSelected = (id, quantity) => ({
+  type: SHOPPING_LIST_PURCHASES_CHANGE_QUANTITY_SELECTED_LIST,
+  payload: {id, quantity}
+});
+
+export const addItemToRemove = (id, isChecked) => ({
+  type: SHOPPING_LIST_PURCHASES_CHECK_ITEM_TO_REMOVE,
+  payload: {isChecked, id}
+});
+
+export const addItemToAdd = (id, isChecked) => ({
+  type: SHOPPING_LIST_PURCHASES_CHECK_ITEM_TO_ADD,
+  payload: {isChecked, id}
+});
+
+export const saveShoppingList = (shoppingList) => (dispatch) =>  {
+  console.log(shoppingList);
+  dispatch(fetchStart());
+  const token = store.getState().user.token;
+  axios({
+    method: 'PUT',
+    url: `${process.env.REACT_APP_SERVER_URL}/shopping-list/save/${shoppingList._id}`,
+    data: shoppingList,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    dispatch(fetchStop());
+    dispatch(showSuccessMessage({message: response.data.message}))
+    dispatch(fetchAllShoppingLists());
+    dispatch(closePurchasesDialog());
+  }).catch(err => {
+    dispatch(errorMessage(err));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+};

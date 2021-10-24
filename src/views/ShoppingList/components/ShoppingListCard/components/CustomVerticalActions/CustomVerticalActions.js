@@ -3,7 +3,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import {IconButton} from "@material-ui/core";
 import PopperCustom from "./PopperCustom";
 
-const CustomVerticalActions = ({shoppingList, handleDelete, handleEdit, item, handleCreateItemDialog}) => {
+const CustomVerticalActions = ({shoppingList, handleDelete, handleEdit, item, handleCreateItemDialog, handlePurchases}) => {
   const [state, setState] = useState({
     anchorEl: null,
     isOpen: false
@@ -38,7 +38,9 @@ const CustomVerticalActions = ({shoppingList, handleDelete, handleEdit, item, ha
             handleEdit={handleEdit}
             handleClose={handleClose}
             anchorEl={state.anchorEl}
-            handleCreateItemDialog={handleCreateItemDialog}/>
+            handleCreateItemDialog={handleCreateItemDialog}
+            handlePurchases={handlePurchases}
+        />
       </>
 
   )

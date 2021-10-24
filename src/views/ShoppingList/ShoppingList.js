@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/styles';
+import React, {useEffect} from 'react';
+import {makeStyles} from '@material-ui/styles';
 import {
   Grid,
   LinearProgress,
@@ -7,9 +7,9 @@ import {
 } from '@material-ui/core';
 import {
   CreateEditShoppingListDialog,
-  DeleteDialog, ShoppingListCard, ShoppingListToolbar
+  DeleteDialog, PurchasesDialog, ShoppingListCard, ShoppingListToolbar
 } from './components';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {fetchAllShoppingLists} from "../../redux/actions/shoppingList.actions";
 
 const useStyles = makeStyles(theme => ({
@@ -36,28 +36,39 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit, deleteDialog}) => {
+const ShoppingList = ({
+  onLoadPage,
+  shoppingLists,
+  isFetching,
+  dialogToCreateEdit,
+  deleteDialog,
+  purchasesDialog
+}) => {
   const classes = useStyles();
   useEffect(() => {
     onLoadPage();
   }, []);
 
   return (
-    <div className={classes.root}>
-     <ShoppingListToolbar />
-      <div className={classes.content}>
-        {isFetching && !dialogToCreateEdit.isOpen && !deleteDialog.isOpen &&
-        <Box component={'div'} boxShadow={3} className={classes.processContent} >
-          <LinearProgress className={classes.progress}/>
-        </Box>}
-        {dialogToCreateEdit.isOpen && <CreateEditShoppingListDialog />}
-        {deleteDialog.isOpen && <DeleteDialog />}
-        {<DeleteDialog />}
+      <div className={classes.root}>
+        <ShoppingListToolbar/>
+        <div className={classes.content}>
+          {isFetching && !dialogToCreateEdit.isOpen && !deleteDialog.isOpen
+          && !purchasesDialog.isOpen &&
+          <Box component={'div'} boxShadow={3}
+               className={classes.processContent}>
+            <LinearProgress className={classes.progress}/>
+          </Box>}
+          {dialogToCreateEdit.isOpen && <CreateEditShoppingListDialog/>}
+          {deleteDialog.isOpen && <DeleteDialog/>}
+          {purchasesDialog.isOpen && <PurchasesDialog/>}
           <Grid
               container
               spacing={3}
           >
-            {(!isFetching || (isFetching && (dialogToCreateEdit.isOpen || deleteDialog.isOpen ))) && shoppingLists.map(shoppingList => (
+            {(!isFetching || (isFetching && (dialogToCreateEdit.isOpen
+                || deleteDialog.isOpen || purchasesDialog.isOpen)))
+            && shoppingLists.map(shoppingList => (
                 <Grid
                     item
                     key={shoppingList._id}
@@ -66,12 +77,12 @@ const ShoppingList = ({onLoadPage, shoppingLists, isFetching, dialogToCreateEdit
                     sm={6}
                     xs={12}
                 >
-                  <ShoppingListCard shoppingList={shoppingList} />
+                  <ShoppingListCard shoppingList={shoppingList}/>
                 </Grid>
             ))}
           </Grid>
+        </div>
       </div>
-    </div>
   );
 };
 
@@ -79,7 +90,8 @@ const mapStateToProps = (state) => ({
   isFetching: state.ui.isFetching,
   shoppingLists: state.shoppingList.shoppingLists,
   dialogToCreateEdit: state.shoppingList.dialogToCreateEditList,
-  deleteDialog: state.shoppingList.deleteDialog
+  deleteDialog: state.shoppingList.deleteDialog,
+  purchasesDialog: state.shoppingList.purchases,
 })
 
 const mapDispatchToProps = (dispatch) => ({
