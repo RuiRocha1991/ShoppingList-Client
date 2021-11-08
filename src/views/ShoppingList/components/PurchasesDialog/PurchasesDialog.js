@@ -2,13 +2,21 @@ import React from 'react';
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
   makeStyles,
+  TextField,
   Typography,
   useMediaQuery,
   useTheme,
@@ -21,15 +29,14 @@ import {
   addItemToRemove,
   changeQuantityOnSelected,
   changeQuantityOnUnselected,
-  closePurchasesDialog,
-  removeItems, saveShoppingList,
+  closePurchasesDialog, finishShoppingMode,
+  removeItems, saveShoppingList, saveShoppingMode, selectOnShoppingMode,
   updateSelectedItems,
   updateUnselectedItems
 } from "../../../../redux/actions/shoppingList.actions";
-import { ListItems } from "./components";
+import {ListItems} from "./components";
 import {red} from "@material-ui/core/colors";
 import clsx from "clsx";
-
 
 const styles = (theme) => ({
   root: {
@@ -45,24 +52,24 @@ const styles = (theme) => ({
 });
 
 const DialogTitleCustom = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
+  const {children, classes, onClose, ...other} = props;
   return (
-    <DialogTitle
-      className={classes.root}
-      disableTypography
-      {...other}
-    >
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </DialogTitle>
+      <DialogTitle
+          className={classes.root}
+          disableTypography
+          {...other}
+      >
+        <Typography variant="h6">{children}</Typography>
+        {onClose ? (
+            <IconButton
+                aria-label="close"
+                className={classes.closeButton}
+                onClick={onClose}
+            >
+              <CloseIcon/>
+            </IconButton>
+        ) : null}
+      </DialogTitle>
   );
 });
 
@@ -108,89 +115,135 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PurchasesDialog = ({
-    handleClose,
-    handleSave,
-    isFetching,
-    dialogConfig,
-    shoppingList,
-    handleUpdateUnselectedItems,
-    handleUpdateSelectedItems,
-    handleRemoveItems,
-    handleAddItems,
-    handleChangeQuantityOnSelected,
-    handleChangeQuantityOnUnselected,
-    handleSelectOnSelectedList,
-    handleSelectOnUnselectedList,
-    itemsTransactions
+  handleClose,
+  handleSave,
+  isFetching,
+  dialogConfig,
+  shoppingList,
+  handleUpdateUnselectedItems,
+  handleUpdateSelectedItems,
+  handleRemoveItems,
+  handleAddItems,
+  handleChangeQuantityOnSelected,
+  handleChangeQuantityOnUnselected,
+  handleSelectOnSelectedList,
+  handleSelectOnUnselectedList,
+  itemsTransactions,
+  isShoppingMode,
+  handleSelectOnShoppingMode,
+  handleSaveOnShoppingMode,
+  handleFinishShoppingMode,
+  isCompleted,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <div>
-      <Dialog
-        aria-labelledby="customized-dialog-title"
-        fullScreen={fullScreen}
-        fullWidth
-        maxWidth={'xs'}
-        onClose={(event, reason) => {
-          if (reason !== 'backdropClick') {
-            handleClose();
-          }
-        }}
-        open={dialogConfig.isOpen}
-      >
-        <DialogTitleCustom
-          id="customized-dialog-title"
-          onClose={handleClose}
+      <div>
+        <Dialog
+            aria-labelledby="customized-dialog-title"
+            fullScreen={fullScreen}
+            fullWidth
+            maxWidth={'xs'}
+            onClose={(event, reason) => {
+              if (reason !== 'backdropClick') {
+                handleClose();
+              }
+            }}
+            open={dialogConfig.isOpen}
         >
-          Prepare Purchase
-        </DialogTitleCustom>
-        <DialogContentCustom dividers>
-
-          <ListItems className={classes.list}
-                     itemsList={shoppingList.selectedItems}
-                     setList={handleUpdateSelectedItems}
-                     handleChangeQuantity={handleChangeQuantityOnSelected}
-                     handleSelect={handleSelectOnSelectedList}
-                     title={"Selected"}
-          />
-          <Box className={classes.buttonsContainer} component="div" my={1} py={1}>
-            <Button className={clsx(classes.buttons, classes.buttonLeft)} size="large"
-                     variant="contained" color="warning"
-                     onClick={() => handleRemoveItems()}
-                     disabled={itemsTransactions.selectedList.length === 0}
-            >Remove</Button>
-            <Button className={classes.buttons} size="large"
-                     variant="contained" color="primary"
-                     onClick={() => handleAddItems()}
-                    disabled={itemsTransactions.unselectedList.length === 0}
-            >Add</Button>
-          </Box>
-
-
-          <ListItems className={classes.list}
-                     itemsList={shoppingList.unselectedItems}
-                     setList={handleUpdateUnselectedItems}
-                     handleChangeQuantity={handleChangeQuantityOnUnselected}
-                     handleSelect={handleSelectOnUnselectedList}
-                     title={"Unselected"}
-          />
-        </DialogContentCustom>
-        <DialogActionsCustom>
-          {isFetching && <CircularProgress size={20} color='inherit' className={classes.progress} />}
-          <Button
-            disabled={isFetching}
-            autoFocus
-            color="primary"
-            onClick={() => handleSave(shoppingList)}
+          <DialogTitleCustom
+              id="customized-dialog-title"
+              onClose={handleClose}
           >
-            Save changes
-          </Button>
-        </DialogActionsCustom>
-      </Dialog>
-    </div>
+            Prepare Purchase
+          </DialogTitleCustom>
+          <DialogContentCustom dividers>
+
+            {!isShoppingMode && <>
+              <ListItems className={classes.list}
+                         itemsList={shoppingList.selectedItems}
+                         setList={handleUpdateSelectedItems}
+                         handleChangeQuantity={handleChangeQuantityOnSelected}
+                         handleSelect={handleSelectOnSelectedList}
+                         title={"Selected"}
+              />
+              <Box className={classes.buttonsContainer} component="div" my={1}
+                   py={1}>
+                <Button className={clsx(classes.buttons, classes.buttonLeft)}
+                        size="large"
+                        variant="contained" color="warning"
+                        onClick={() => handleRemoveItems()}
+                        disabled={itemsTransactions.selectedList.length === 0}
+                >Remove</Button>
+                <Button className={classes.buttons} size="large"
+                        variant="contained" color="primary"
+                        onClick={() => handleAddItems()}
+                        disabled={itemsTransactions.unselectedList.length === 0}
+                >Add</Button>
+              </Box>
+              <ListItems className={classes.list}
+                         itemsList={shoppingList.unselectedItems}
+                         setList={handleUpdateUnselectedItems}
+                         handleChangeQuantity={handleChangeQuantityOnUnselected}
+                         handleSelect={handleSelectOnUnselectedList}
+                         title={"Unselected"}
+              />
+            </>}
+            {isShoppingMode && <>
+              <List >
+                {shoppingList.shoppingMode.map(item => (
+                    <ListItem divider={true} key={item._id}>
+                      <ListItemIcon>
+                        <Checkbox
+                            checked={item.isCollected}
+                            edge="start"
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{'aria-labelledby': item._id}}
+                            onChange={(event) => handleSelectOnShoppingMode(item._id, event.target.checked)}
+                        />
+                      </ListItemIcon>
+                      <ListItemText id={item._id} primary={item.item.name}/>
+                      <ListItemSecondaryAction>
+                        <TextField
+                            label={item.item.unitMeasurement.toUpperCase()}
+                            name={item.item.name}
+                            value={item.quantity} style={{textAlign: 'right', maxWidth: '50px'}}
+                            disabled
+                        />
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                ))}
+              </List>
+            </>}
+
+          </DialogContentCustom>
+          <DialogActionsCustom>
+            {isFetching && <CircularProgress size={20} color='inherit'
+                                             className={classes.progress}/>}
+            <Button
+                disabled={isFetching}
+                autoFocus
+                color="primary"
+                onClick={() => {
+                  if (isShoppingMode) {
+                    if(isCompleted) {
+                      handleFinishShoppingMode(shoppingList)
+                    } else {
+                      handleSaveOnShoppingMode(shoppingList);
+                    }
+                  } else {
+                    handleSave(shoppingList);
+                  }
+                }}
+            >
+              {isCompleted && isShoppingMode ? 'Finish Purchase':'Save changes'}
+            </Button>
+          </DialogActionsCustom>
+        </Dialog>
+      </div>
   );
 }
 
@@ -199,6 +252,8 @@ const mapStateToProps = (state) => ({
   dialogConfig: state.shoppingList.purchases,
   shoppingList: state.shoppingList.purchases.shoppingList,
   itemsTransactions: state.shoppingList.purchases.itemsTransactions,
+  isShoppingMode: state.shoppingList.purchases.shoppingMode,
+  isCompleted: state.shoppingList.purchases.isCompleted,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -231,6 +286,15 @@ const mapDispatchToProps = (dispatch) => ({
   },
   handleSelectOnUnselectedList: (id, isChecked) => {
     dispatch(addItemToAdd(id, isChecked));
+  },
+  handleSelectOnShoppingMode: (id, isChecked) => {
+    dispatch(selectOnShoppingMode(id, isChecked));
+  },
+  handleSaveOnShoppingMode: (shoppingList) => {
+    dispatch(saveShoppingMode(shoppingList));
+  },
+  handleFinishShoppingMode: (shoppingList) => {
+    dispatch(finishShoppingMode(shoppingList));
   },
 })
 

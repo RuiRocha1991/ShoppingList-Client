@@ -15,6 +15,10 @@ import {
   SHOPPING_LIST_PURCHASES_DIALOG_CLOSE,
   SHOPPING_LIST_PURCHASES_DIALOG_OPEN,
   SHOPPING_LIST_PURCHASES_REMOVE_ITEMS,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_COLLECT_ITEM,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_FINISH,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_SELECT,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_START,
   SHOPPING_LIST_PURCHASES_SORT_SELECTED_ITEMS,
   SHOPPING_LIST_PURCHASES_SORT_UNSELECTED_ITEMS,
 } from "../../Constants";
@@ -235,7 +239,6 @@ export const addItemToAdd = (id, isChecked) => ({
 });
 
 export const saveShoppingList = (shoppingList) => (dispatch) =>  {
-  console.log(shoppingList);
   dispatch(fetchStart());
   const token = store.getState().user.token;
   axios({
@@ -256,3 +259,86 @@ export const saveShoppingList = (shoppingList) => (dispatch) =>  {
     }
   });
 };
+
+export const startShoppingMode = (shoppingList) => (dispatch) =>  {
+  dispatch(fetchStart());
+  const token = store.getState().user.token;
+  axios({
+    method: 'PUT',
+    url: `${process.env.REACT_APP_SERVER_URL}/shopping-list/shoppingMode/start/${shoppingList._id}`,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    dispatch(fetchStop());
+    console.log(response.data.shoppingList)
+    dispatch(startShoppingModeSuccess(response.data.shoppingList));
+  }).catch(err => {
+    dispatch(errorMessage(err));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+};
+
+export const startShoppingModeSuccess = (shoppingList) => ({
+  type: SHOPPING_LIST_PURCHASES_SHOPPING_MODE_START,
+  payload: shoppingList
+});
+
+export const saveShoppingMode = (shoppingList) => (dispatch) =>  {
+  dispatch(fetchStart());
+  const token = store.getState().user.token;
+  axios({
+    method: 'PUT',
+    url: `${process.env.REACT_APP_SERVER_URL}/shopping-list/shoppingMode/save/${shoppingList._id}`,
+    data: shoppingList,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    dispatch(fetchStop());
+  }).catch(err => {
+    dispatch(errorMessage(err));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+};
+
+export const saveShoppingModeSuccess = (shoppingList) => ({
+  type: SHOPPING_LIST_PURCHASES_SHOPPING_MODE_COLLECT_ITEM,
+  payload: shoppingList
+});
+
+export const finishShoppingMode = (shoppingList) => (dispatch) =>  {
+  dispatch(fetchStart());
+  const token = store.getState().user.token;
+  axios({
+    method: 'PUT',
+    url: `${process.env.REACT_APP_SERVER_URL}/shopping-list/shoppingMode/finish/${shoppingList._id}`,
+    data: shoppingList,
+    headers: { token },
+    withCredentials: true
+  }).then(response => {
+    dispatch(fetchStop());
+    dispatch(showSuccessMessage({message: response.data.message}))
+    dispatch(closePurchasesDialog());
+    dispatch(fetchAllShoppingLists());
+    dispatch(finishShoppingModeSuccess());
+  }).catch(err => {
+    dispatch(errorMessage(err));
+    if (err.response.status === 401) {
+      dispatch(logoutFinally());
+    }
+  });
+};
+
+export const finishShoppingModeSuccess = () => ({
+  type: SHOPPING_LIST_PURCHASES_SHOPPING_MODE_FINISH,
+});
+
+export const selectOnShoppingMode = (id, isChecked) => ({
+  type: SHOPPING_LIST_PURCHASES_SHOPPING_MODE_SELECT,
+  payload: {id, isChecked}
+});
+
+

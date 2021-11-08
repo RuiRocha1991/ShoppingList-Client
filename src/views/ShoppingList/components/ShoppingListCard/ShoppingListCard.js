@@ -26,7 +26,7 @@ import {connect} from "react-redux";
 import {CustomVerticalActions} from "./components";
 import {
   openDeleteDialog,
-  openDialogToEdit, openPurchasesDialog
+  openDialogToEdit, openPurchasesDialog, startShoppingMode
 } from "../../../../redux/actions/shoppingList.actions";
 
 const useStyles = makeStyles(theme => ({
@@ -70,9 +70,9 @@ const ShoppingListCard = props => {
     handleEdit,
     handleDelete,
     handlePurchases,
+    handleShoppingMode,
     ...rest
   } = props;
-  console.log(shoppingList)
   const classes = useStyles();
   return (
       <Card
@@ -90,7 +90,9 @@ const ShoppingListCard = props => {
               <CustomVerticalActions shoppingList={shoppingList}
                                      handleEdit={handleEdit}
                                      handleDelete={handleDelete}
-                                     handlePurchases={handlePurchases}/>
+                                     handlePurchases={handlePurchases}
+                                     handleShoppingMode={handleShoppingMode}
+              />
             }
             title={shoppingList.name}
             subheader={shoppingList.description}
@@ -103,7 +105,7 @@ const ShoppingListCard = props => {
               </ListSubheader>
             }>
               {shoppingList.selectedItems.map((item) => (
-                  <ListItem key={`item-${item._id}`} divider={true}>
+                  <ListItem key={item._id} divider={true}>
                     <ListItemText primary={item.item.name}/>
                     <ListItemSecondaryAction>
                       <TextField
@@ -164,6 +166,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   handlePurchases: (shoppingList) => {
     dispatch(openPurchasesDialog(shoppingList));
+  },
+  handleShoppingMode: (shoppingList) => {
+    dispatch(startShoppingMode(shoppingList))
   }
 })
 

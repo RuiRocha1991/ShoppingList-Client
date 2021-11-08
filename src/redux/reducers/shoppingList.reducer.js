@@ -16,6 +16,10 @@ import {
   SHOPPING_LIST_PURCHASES_DIALOG_CLOSE,
   SHOPPING_LIST_PURCHASES_DIALOG_OPEN,
   SHOPPING_LIST_PURCHASES_REMOVE_ITEMS,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_COLLECT_ITEM,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_FINISH,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_SELECT,
+  SHOPPING_LIST_PURCHASES_SHOPPING_MODE_START,
   SHOPPING_LIST_PURCHASES_SORT_SELECTED_ITEMS,
   SHOPPING_LIST_PURCHASES_SORT_UNSELECTED_ITEMS
 } from '../../Constants'
@@ -37,6 +41,7 @@ const initialState = {
   purchases: {
     shoppingList: undefined,
     isOpen: false,
+    shoppingMode: false,
     itemsTransactions: {
       unselectedList: [],
       selectedList: []
@@ -145,7 +150,12 @@ export default (state = initialState, action) => {
         purchases: {
           ...state.purchases,
           isOpen: false,
-          shoppingList: undefined
+          shoppingList: undefined,
+          shoppingMode: false,
+          itemsTransactions: {
+            unselectedList: [],
+            selectedList: []
+          }
         }
       }
     case SHOPPING_LIST_PURCHASES_SORT_UNSELECTED_ITEMS:
@@ -172,15 +182,12 @@ export default (state = initialState, action) => {
       }
     case SHOPPING_LIST_PURCHASES_ADD_ITEMS: {
       const {unselectedList} = state.purchases.itemsTransactions;
-      console.log(unselectedList);
       const selectedItems = state.purchases.shoppingList.selectedItems.concat(
           state.purchases.shoppingList.unselectedItems.filter(
               item => unselectedList.includes(item._id)));
       selectedItems.sort((a,b) => (a.rankWhenSelected > b.rankWhenSelected) ? 1 : ((b.rankWhenSelected > a.rankWhenSelected) ? -1 : 0));
       const unselectedItems = state.purchases.shoppingList.unselectedItems.filter(
           item => !unselectedList.includes(item._id));
-
-
 
       return {
         ...state,
@@ -299,6 +306,69 @@ export default (state = initialState, action) => {
         }
       }
     }
+    case SHOPPING_LIST_PURCHASES_SHOPPING_MODE_COLLECT_ITEM: {
+      const {index, id, isChecked} = action.payload;
+      const {shoppingMode} = state.purchases.shoppingList;
+      if (shoppingMode[index]._id === id) {
+        shoppingMode[index].isChecked = isChecked
+      }
+      return {
+        ...state,
+        purchases: {
+          ...state.purchases,
+          shoppingList: {
+            ...state.purchases.shoppingList,
+            shoppingMode: shoppingMode
+          }
+        }
+      }
+    }
+    case SHOPPING_LIST_PURCHASES_SHOPPING_MODE_START: {
+
+      const selectedCount = action.payload.shoppingMode.filter(item => item.isChecked).length;
+      return {
+        ...state,
+        purchases: {
+          ...state.purchases,
+          shoppingList: action.payload,
+          shoppingMode: true,
+          isOpen: true,
+          isCompleted: selectedCount === action.payload.shoppingMode.length
+        }
+      }
+    }
+    case SHOPPING_LIST_PURCHASES_SHOPPING_MODE_FINISH: {
+      return {
+        ...state,
+        purchases: {
+          ...state.purchases,
+          shoppingList: undefined,
+          shoppingMode: false
+        }
+      }
+    }
+    case SHOPPING_LIST_PURCHASES_SHOPPING_MODE_SELECT:
+      let selectedItems = 0;
+      return {
+        ...state,
+        purchases: {
+          ...state.purchases,
+          shoppingList: {
+            ...state.purchases.shoppingList,
+            shoppingMode: state.purchases.shoppingList.shoppingMode.map(item => {
+              if (item._id === action.payload.id) {
+                item.isCollected = action.payload.isChecked;
+              }
+              if (item.isCollected) {
+                selectedItems++;
+              }
+              return item;
+            }),
+          },
+          isCompleted: selectedItems === state.purchases.shoppingList.shoppingMode.length
+        }
+      }
+
 
     default:
       return state;

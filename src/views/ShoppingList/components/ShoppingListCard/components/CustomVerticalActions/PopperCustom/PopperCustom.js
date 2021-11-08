@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const PopperCustom = ({handleClose, isOpen, anchorEl, handleEdit, shoppingList, handleDelete, handlePurchases}) => {
+const PopperCustom = ({handleClose, isOpen, anchorEl, handleEdit, shoppingList, handleDelete, handlePurchases, handleShoppingMode}) => {
   const classes = useStyles();
   return (
       <Menu
@@ -34,6 +34,13 @@ const PopperCustom = ({handleClose, isOpen, anchorEl, handleEdit, shoppingList, 
         }}>
           <ListIcon  className={classes.icon} />
           Prepare Purchases
+        </MenuItem>
+        <MenuItem disabled={shoppingList.selectedItems.length === 0} onClick={() => {
+          handleShoppingMode(shoppingList);
+          handleClose();
+        }}>
+          <ListIcon  className={classes.icon} />
+          Shopping Mode
         </MenuItem>
         <Divider className={classes.divider}/>
         <MenuItem onClick={() => {
